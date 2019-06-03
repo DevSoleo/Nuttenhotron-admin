@@ -1,33 +1,33 @@
-function guild_send_message(message)
-  SendChatMessage(message, "GUILD", nil, GetUnitName("PLAYERTARGET"))
+function guildSendMessage(message)
+  SendChatMessage(message, "GUILD")
 end
 
-function get_player_guild_rank_index(player)
+function getPlayerGuildRankIndex(player)
 	if player == nil then
 		player = "player"
 	end
 
-	local guildName, guildRankName, guildRankIndex = GetGuildInfo(player)
+	local guild_name, guild_rank_name, guild_rank_index = GetGuildInfo(player)
 
-	return guildRankIndex
+	return guild_rank_index
 end
 
-function get_player_guild_rank_name(player)
+function getPlayerGuildRankName(player)
 	if player == nil then
 		player = "player"
 	end
 
-	local guildName, guildRankName, guildRankIndex = GetGuildInfo(player)
+	local guild_name, guild_rank_name, guild_rank_index = GetGuildInfo(player)
 
-	return guildRankName
+	return guild_rank_name
 end
 
-function get_player_guild_name(player)
+function getPlayerGuildName(player)
 	if player == nil then
 		player = "player"
 	end
 
-	local guildName, guildRankName, guildRankIndex = GetGuildInfo(player)
+	local guild_name, guild_rank_name, guild_rank_index = GetGuildInfo(player)
 
-	return guildName
+	return guild_name
 end

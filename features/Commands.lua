@@ -1,34 +1,28 @@
-SLASH_GRADE1 = "/grade"
 SLASH_EVENT1 = "/event"
 SLASH_REWARD1 = "/reward"
-
-SlashCmdList["GRADE"] = function(msg)
-	print(getPlayerGuildRankIndex(sender))
-end
 
 SlashCmdList["EVENT"] = function(msg)
 	local command = split(msg, " ")
 
 	if IsInGuild() then
-	  	if command[1] == "start" then
-
-	  		if _0Admin["isStarted"] == false and command[2] ~= nil then
-		  		_0Admin["isStarted"] = true
-
-		  		if command[2] == nil then
+		if command[1] == "start" then
+			if vAGet("isStarted") == false or vAGet("isStarted") == nil then
+				vASave("isStarted", true)
+				
+				if command[2] == nil then
 		  			-- key = generate_key(10)
 		  		else
-		  			_0Admin["key"] = command[2]
+		  			vASave("key", command[2])
 			  			
-			  		print("Clé d'évènement : " .. _0Admin["key"])
+			  		-- print("Clé d'évènement : " .. _Admin["key"])
 
-			  		eventDurationHours = 4
+			  		local eventDurationHours = 4
 
-					hour = tonumber(getServerDate("%H")) + eventDurationHours -- date("%H")
-					endHour = hour - math.floor(hour / 24) * 24
-					minutes = tonumber(getServerDate("%M")) -- date("%M")
+					local hour = tonumber(getServerDate("%H")) + eventDurationHours -- date("%H")
+					local endHour = hour - math.floor(hour / 24) * 24
+					local minutes = tonumber(getServerDate("%M")) -- date("%M")
 
-					day = tonumber(getServerDate("%d"), base)
+					local day = tonumber(getServerDate("%d"))
 
 					if endHour <= 4 then
 						day = day + 1
@@ -38,20 +32,28 @@ SlashCmdList["EVENT"] = function(msg)
 						day = "0" .. tostring(day)
 					end
 
-		  			SendChatMessage("Clé d'évènement : " .. _0Admin["key"], "GUILD") -- SAY
+					if #tostring(endHour) == 1 then
+						endHour = "0" .. tostring(endHour)
+					end
+
+					if #tostring(minutes) == 1 then
+						minutes = "0" .. tostring(minutes)
+					end
+
+		  			SendChatMessage("Clé d'évènement : " .. vAGet("key"), "GUILD") -- SAY
 					SendChatMessage("Date de fin maximale : " .. day .. "/06/2019 " .. endHour .. "h" .. minutes, "GUILD")
 		  		end
-		  	else
-		  		print("Un event est déjà en cours !")
-		  	end
-	  	elseif command[1] == "stop" then
-	  		if _0Admin["isStarted"] == true then
-				_0Admin["isStarted"] = false
-				_0Admin["key"] = ""
+			else
+		  		print("|cFFF547FF[Addon] [" .. addonName .. "] : Un event est déjà en cours !")
+			end
+		elseif command[1] == "stop" then
+	  		if vAGet("isStarted") == true then
+				vASave("isStarted", false)
+				vASave("key", "")
 
 				SendChatMessage("L'évènement est terminé !", "GUILD") -- SAY
 			else
-				print("Aucun event n'est en cours !")
+				print("|cFFF547FF[Addon] [" .. addonName .. "] : Aucun event n'est en cours !")
 			end
 		end
 	end
@@ -60,7 +62,7 @@ end
 SlashCmdList["REWARD"] = function(msg)
 	local command = split(msg, " ")
 
-	if _0Admin["isStarted"] == false then
+	if vAGet("isStarted") == false or vAGet("isStarted") == nil then
 		if command[1] == "add" then
 				
 			local amount = tonumber(command[3])
@@ -68,7 +70,14 @@ SlashCmdList["REWARD"] = function(msg)
 			if command[2] ~= "gold" then
 				local itemName = GetItemInfo(tonumber(command[2]))
 			
-				SendChatMessage(UnitName("player") .. " a ajouté x" .. amount .. " " .. itemName .. " en récompense !", "GUILD")
+				SendChatMessage(UnitName("player") .. " a ajouté x" .. amount .. " " .. itemName .. " (" .. command[2] .. ") en récompense !", "GUILD")
+				
+				if getArraySize(vAGet("rewards")) == nil then
+					vASave("rewards", {})
+					_Admin["rewards"]["0"] = {id=id, amount=amount}
+				else
+					_Admin["rewards"][getArraySize(vAGet("rewards"))] = {id=id, amount=amount}
+				end
 			else
 				SendChatMessage(UnitName("player") .. " a ajouté x" .. amount .. " Pièces d'Or en récompense !", "GUILD")
 			end
@@ -77,9 +86,9 @@ SlashCmdList["REWARD"] = function(msg)
 
 			SendChatMessage(UnitName("player") .. " a retiré une récompense.", "GUILD")
 		else
-			print("|cffff0000Commande invalide !")
+			print("|cFFF547FF[Addon] [" .. addonName .. "] : Commande invalide !")
 		end
 	else
-		print("|cffff0000Un event est déjà en cours !")
+		print("|cFFF547FF[Addon] [" .. addonName .. "] : Un event est déjà en cours !")
 	end
 end
