@@ -13,6 +13,7 @@ SlashCmdList["EVENT"] = function(msg)
 		  			-- key = generate_key(10)
 		  		else
 		  			vASave("key", command[2])
+					vASave("playingUsers", {})
 			  			
 			  		-- print("Clé d'évènement : " .. _Admin["key"])
 
@@ -42,7 +43,7 @@ SlashCmdList["EVENT"] = function(msg)
 
 		  			SendChatMessage("Clé d'évènement : " .. vAGet("key"), "GUILD") -- SAY
 					SendChatMessage("Le Maître du Jeu sera : " .. "Soleo", "GUILD")
-					SendChatMessage("Date de fin maximale : " .. day .. "/06/2019 " .. endHour .. "h" .. minutes, "GUILD")
+					SendChatMessage("Date maximale de fin : " .. day .. "/06/2019 " .. endHour .. "h" .. minutes, "GUILD")
 		  		end
 			else
 		  		print("|cFFF547FF[Addon] [" .. addonName .. "] : Un event est déjà en cours !")
