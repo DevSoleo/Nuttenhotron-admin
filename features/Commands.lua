@@ -41,6 +41,7 @@ SlashCmdList["EVENT"] = function(msg)
 					end
 
 		  			SendChatMessage("Clé d'évènement : " .. vAGet("key"), "GUILD") -- SAY
+					SendChatMessage("Le Maître du Jeu sera : " .. "Soleo", "GUILD")
 					SendChatMessage("Date de fin maximale : " .. day .. "/06/2019 " .. endHour .. "h" .. minutes, "GUILD")
 		  		end
 			else
@@ -50,6 +51,8 @@ SlashCmdList["EVENT"] = function(msg)
 	  		if vAGet("isStarted") == true then
 				vASave("isStarted", false)
 				vASave("key", "")
+
+				playingUsers = {}
 
 				SendChatMessage("L'évènement est terminé !", "GUILD") -- SAY
 			else
