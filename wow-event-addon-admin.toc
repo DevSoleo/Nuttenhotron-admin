@@ -1,0 +1,16 @@
+## Interface: 40300
+## Title: wow-event-addon-admin
+## Author: Soleo
+## Version: 0.1
+## SavedVariables: _0Admin
+
+functions\math_fn.lua
+functions\string_fn.lua
+functions\array_fn.lua
+functions\guild_fn.lua
+functions\player_fn.lua
+
+features\VariableSystem.lua
+features\Commands.lua
+
+main.lua
