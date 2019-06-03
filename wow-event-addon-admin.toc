@@ -11,6 +11,8 @@ functions\guild_fn.lua
 functions\player_fn.lua
 
 features\VariableSystem.lua
+features\Keys.lua
+features\Events.lua
 features\Commands.lua
 
 main.lua
