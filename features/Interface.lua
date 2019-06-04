@@ -26,42 +26,23 @@ main_frame:SetBackdropColor(0, 0, 0);
 main_frame:SetPoint("LEFT", 20, 0)
 
 main_frame:Show()
+	
+local missions_types = {"Parler à un PNJ", "Trouver un lieu", "Ramasser un item", "Tuer des mobs", "Répondre à une question", "Interagir avec un joueur"}
 
-local favoriteNumber = 42 -- A user-configurable setting
+local dropdown = CreateFrame("FRAME", "MissionsTypesDropdown", main_frame, "UIDropDownMenuTemplate")
+dropdown:SetPoint("TOPLEFT", 0, -15)
+UIDropDownMenu_SetWidth(dropdown, 150)
+UIDropDownMenu_SetText(dropdown, "Type de mission :")
 
--- Create the dropdown, and configure its appearance
-local dropDown = CreateFrame("FRAME", "WPDemoDropDown", main_frame, "UIDropDownMenuTemplate")
-dropDown:SetPoint("CENTER")
-UIDropDownMenu_SetWidth(dropDown, 200)
-UIDropDownMenu_SetText(dropDown, "Favorite number: " .. favoriteNumber)
-
--- Create and bind the initialization function to the dropdown menu
-UIDropDownMenu_Initialize(dropDown, function(self, level, menuList)
- local info = UIDropDownMenu_CreateInfo()
- if (level or 1) == 1 then
-  -- Display the 0-9, 10-19, ... groups
-  for i=0,4 do
-   info.text, info.checked = i*10 .. " - " .. (i*10+9), favoriteNumber >= i*10 and favoriteNumber <= (i*10+9)
-   info.menuList, info.hasArrow = i, true
-   UIDropDownMenu_AddButton(info)
-  end
-
- else
-  -- Display a nested group of 10 favorite number options
-  info.func = self.SetValue
-  for i=menuList*10, menuList*10+9 do
-   info.text, info.arg1, info.checked = i, i, i == favoriteNumber
-   UIDropDownMenu_AddButton(info, level)
-  end
- end
+UIDropDownMenu_Initialize(dropdown, function(self, level, menuList)
+	for i=1, getArraySize(missions_types) do
+		local info = UIDropDownMenu_CreateInfo()
+		info.text, info.arg1, info.checked, info.func = missions_types[i], i, true, self.SetValue
+		UIDropDownMenu_AddButton(info)
+	end
 end)
 
--- Implement the function to change the favoriteNumber
-function dropDown:SetValue(newValue)
- favoriteNumber = newValue
- -- Update the text; if we merely wanted it to display newValue, we would not need to do this
- UIDropDownMenu_SetText(dropDown, "Favorite number: " .. favoriteNumber)
- -- Because this is called from a sub-menu, only that menu level is closed by default.
- -- Close the entire menu with this next call
- CloseDropDownMenus()
-end
+function dropdown:SetValue(value)
+	UIDropDownMenu_SetText(dropdown, missions_types[value])
+	CloseDropDownMenus()
+end  
