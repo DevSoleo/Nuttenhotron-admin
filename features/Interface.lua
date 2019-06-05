@@ -1,4 +1,4 @@
-local main_window = CreateFrame("Frame", nil, UIParent)
+--[[local main_window = CreateFrame("Frame", nil, UIParent)
 main_window:SetFrameStrata("BACKGROUND")
 main_window:SetMovable(true) -- Permet le déplacement de la fenêtre
 main_window:EnableMouse(true)
@@ -33,7 +33,7 @@ form_frame:SetHeight(350)
 form_frame:SetPoint("BOTTOM", 0, 0)
 
 form_frame:Show()
-
+]]
 --[[
 local label_1 = form_frame:CreateFontString(nil, "ARTWORK")
 label_1:SetFont("Fonts\\ARIALN.ttf", 13)
@@ -41,7 +41,7 @@ label_1:SetPoint("TOPLEFT", 25, -10)
 label_1:SetText("Nom du PNJ : ")
 label_1:SetTextColor(255, 255, 255, 1)
 ]]
-
+--[[
 local first = {}
 local second = {}
 
@@ -160,7 +160,7 @@ submit_button:SetScript("OnClick", function(self)
 	end
 
 	print(key)
-end)
+end)]]
 --[[
 
 
