@@ -1,7 +1,7 @@
 SLASH_EVENT1 = "/event"
 SLASH_REWARD1 = "/reward"
 
-SlashCmdList["EVENT"] = function(msg)
+function eventCommand(msg)
 	local command = split(msg, " ")
 
 	if IsInGuild() then
@@ -57,7 +57,7 @@ SlashCmdList["EVENT"] = function(msg)
                         end)
 					end
 
-					wait(10, function()
+					wait(1, function()
 						chrono(1.5, 5)
 					end)
 		  		end
@@ -77,6 +77,10 @@ SlashCmdList["EVENT"] = function(msg)
 			end
 		end
 	end
+end
+
+SlashCmdList["EVENT"] = function(msg)
+	eventCommand(msg)
 end
 
 SlashCmdList["REWARD"] = function(msg)

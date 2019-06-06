@@ -4,6 +4,8 @@
 ## Version: 0.1
 ## SavedVariables: _Admin
 
+main.lua
+
 functions\system_fn.lua
 functions\math_fn.lua
 functions\string_fn.lua
@@ -19,5 +21,3 @@ features\Events.lua
 features\Commands.lua
 
 features\Interface.lua
-
-main.lua
