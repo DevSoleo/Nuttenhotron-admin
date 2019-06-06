@@ -44,6 +44,22 @@ SlashCmdList["EVENT"] = function(msg)
 		  			SendChatMessage("Clé d'évènement : " .. vAGet("key"), "GUILD") -- SAY
 					SendChatMessage("Le Maître du Jeu sera : " .. "Soleo", "GUILD")
 					SendChatMessage("Date maximale de fin : " .. day .. "/06/2019 " .. endHour .. "h" .. minutes, "GUILD")
+
+					function chrono(t, num)
+                        wait(t, function()
+                        	if vAGet("isStarted") == true then
+								SendChatMessage("---- Départ de l'évènement dans .... " .. num .. " ----", "GUILD")
+		                        
+		                        if num ~= 1 then
+		                        	chrono(t, num - 1)
+		                        end
+                        	end
+                        end)
+					end
+
+					wait(10, function()
+						chrono(1.5, 5)
+					end)
 		  		end
 			else
 		  		print("|cFFF547FF[Addon] [" .. addonName .. "] : Un event est déjà en cours !")
