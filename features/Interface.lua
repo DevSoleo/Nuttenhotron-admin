@@ -26,6 +26,12 @@ main_window:SetBackdropColor(0, 0, 0);
 main_window:SetPoint("LEFT", 20, 0)
 
 main_window:Show()
+
+main_window.scroll = CreateFrame("ScrollFrame", "myScrollFrame", main_window, "UIPanelScrollFrameTemplate")
+main_window.scroll:SetScrollChild(main_window.content)
+
+main_window.scroll:SetPoint("CENTER", 0, 0)
+main_window.scroll:Show()
 	
 local form_frame = CreateFrame("Frame", nil, main_window)
 form_frame:SetWidth(415)

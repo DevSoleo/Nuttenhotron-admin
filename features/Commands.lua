@@ -52,6 +52,10 @@ function eventCommand(msg)
 		                        
 		                        if num ~= 1 then
 		                        	chrono(t, num - 1)
+		                        else
+		                        	wait(1.3, function()
+										SendChatMessage("---- L'évènement Nuttenh Ayms automatisé débute ! ----", "GUILD")
+		                        	end)
 		                        end
                         	end
                         end)
@@ -60,6 +64,7 @@ function eventCommand(msg)
 					wait(1, function()
 						chrono(1.5, 5)
 					end)
+
 		  		end
 			else
 		  		print("|cFFF547FF[Addon] [" .. addonName .. "] : Un event est déjà en cours !")
