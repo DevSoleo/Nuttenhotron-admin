@@ -41,7 +41,14 @@ function eventCommand(msg)
 						minutes = "0" .. tostring(minutes)
 					end
 
-		  			SendChatMessage("Clé d'évènement : " .. crypt(vAGet("key")), "GUILD") -- SAY
+					local s = splitByChunk(vAGet("key"), 6 * 2)
+					local c = ""
+
+					for i,v in ipairs(s) do
+					    c = c .. " " .. crypt(v)
+					end
+
+		  			SendChatMessage("Clé d'évènement : " .. c, "GUILD") -- SAY
 					SendChatMessage("Le Maître du Jeu sera : " .. "Soleo", "GUILD")
 					SendChatMessage("Date maximale de fin : " .. day .. "/06/2019 " .. endHour .. "h" .. minutes, "GUILD")
 
