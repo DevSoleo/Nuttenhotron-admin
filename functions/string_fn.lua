@@ -11,6 +11,7 @@ function split(str, delim)
 end
 
 function splitByChunk(text, chunkSize)
+	text = tostring(text)
     local s = {}
 
     for i=1, #text, chunkSize do
@@ -32,11 +33,11 @@ function crypt(k)
 	t[2] = "0k"
 	t[3] = "2s"
 	t[4] = "ny"
+	t[5] = "dy"
 	t[6] = "9l"
 	t[7] = "nn"
 	t[8] = "31"
 	t[9] = "rm"
-	t[10] = "dy"
 
 	for i,v in ipairs(s) do
 	   c = c .. t[tonumber(v)]
