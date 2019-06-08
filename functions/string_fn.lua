@@ -22,8 +22,6 @@ function splitByChunk(text, chunkSize)
 end
 
 function crypt(k)
-	k = tonumber(k)
-	k = k + 1175774796
 	local s = splitByChunk(k, 1)
 	local c = ""
 
