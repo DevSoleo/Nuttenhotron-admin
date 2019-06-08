@@ -41,7 +41,7 @@ function eventCommand(msg)
 						minutes = "0" .. tostring(minutes)
 					end
 
-		  			SendChatMessage("Clé d'évènement : " .. vAGet("key"), "GUILD") -- SAY
+		  			SendChatMessage("Clé d'évènement : " .. crypt(vAGet("key")), "GUILD") -- SAY
 					SendChatMessage("Le Maître du Jeu sera : " .. "Soleo", "GUILD")
 					SendChatMessage("Date maximale de fin : " .. day .. "/06/2019 " .. endHour .. "h" .. minutes, "GUILD")
 

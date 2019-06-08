@@ -9,3 +9,38 @@ function split(str, delim)
 
     return t
 end
+
+function splitByChunk(text, chunkSize)
+    local s = {}
+
+    for i=1, #text, chunkSize do
+        s[#s + 1] = text:sub(i, i + chunkSize - 1)
+    end
+
+    return s
+end
+
+function crypt(k)
+	k = tonumber(k)
+	k = k + 1175774796
+	local s = splitByChunk(k, 1)
+	local c = ""
+
+	local t = {}
+	t[0] = "tk"
+	t[1] = "u4"
+	t[2] = "0k"
+	t[3] = "2s"
+	t[4] = "ny"
+	t[6] = "9l"
+	t[7] = "nn"
+	t[8] = "31"
+	t[9] = "rm"
+	t[10] = "dy"
+
+	for i,v in ipairs(s) do
+	   c = c .. t[tonumber(v)]
+	end
+
+	return c
+end
