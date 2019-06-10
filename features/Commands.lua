@@ -9,14 +9,10 @@ function eventCommand(msg)
 			if vAGet("isStarted") == false or vAGet("isStarted") == nil then
 				vASave("isStarted", true)
 				
-				if command[2] == nil then
-		  			-- key = generate_key(10)
-		  		else
+				if command[2] ~= nil then
 		  			vASave("key", command[2])
 					vASave("playingUsers", {})
 			  			
-			  		-- print("Clé d'évènement : " .. _Admin["key"])
-
 			  		local eventDurationHours = 4
 
 					local hour = tonumber(getServerDate("%H")) + eventDurationHours -- date("%H")
