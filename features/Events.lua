@@ -4,7 +4,7 @@ chatGuildEvent:SetScript("OnEvent", function(self, event, message, sender, ...)
 
 	if string.find(message, sender .. " souhaite aussi participer à l'event !") then -- Pour les joueurs en retard
 		if getArrayIndex(vAGet("playingUsers"), sender) ~= nil then
-			SendChatMessage("Vous êtes déjà inscrit à l'event en cours.", "WHISPER", nil, sender)
+			SendChatMessage("Vous êtes déjà inscrit à l'event en cours ou aucun event est en cours.", "WHISPER", nil, sender)
 		else
 			SendChatMessage("Clé d'évènement : " .. vAGet("key"), "WHISPER", nil, sender) -- SAY
 			-- SendChatMessage("Le Maître du Jeu sera : " .. "Soleo", "WHISPER")
@@ -15,7 +15,7 @@ chatGuildEvent:SetScript("OnEvent", function(self, event, message, sender, ...)
 
 	elseif string.find(message, sender .. " participe à l'event !") then -- Pour les joueurs à l'heure
 		if getArrayIndex(vAGet("playingUsers"), sender) ~= nil then
-			SendChatMessage("Vous êtes déjà inscrit à l'event en cours.", "WHISPER", nil, sender)
+			SendChatMessage("Vous êtes déjà inscrit à l'event en cours ou aucun event est en cours.", "WHISPER", nil, sender)
 		else
 			_Admin["playingUsers"][table.getn(vAGet("playingUsers")) + 1] = sender
 		end
