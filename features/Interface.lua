@@ -8,6 +8,7 @@ NuttenhAdmin.main_frame:SetScript("OnDragStart", NuttenhAdmin.main_frame.StartMo
 NuttenhAdmin.main_frame:SetScript("OnDragStop", NuttenhAdmin.main_frame.StopMovingOrSizing) -- frame.StopMovingOrSizing
 NuttenhAdmin.main_frame:SetWidth(600)
 NuttenhAdmin.main_frame:SetHeight(500)
+NuttenhAdmin.main_frame:SetFrameLevel(5)
 
 NuttenhAdmin.main_frame:SetBackdrop({
 	bgFile="Interface/Tooltips/UI-Tooltip-Background", 
@@ -24,24 +25,19 @@ NuttenhAdmin.main_frame:SetBackdrop({
 })
 
 NuttenhAdmin.main_frame:SetBackdropColor(0, 0, 0)
-NuttenhAdmin.main_frame:SetPoint("LEFT", 20, 0)
+NuttenhAdmin.main_frame:SetPoint("TOP", 20, -20)
 
 NuttenhAdmin.main_frame:Show()
 
 NuttenhAdmin.key = {}
 
-function concatKey(part)
-
-	NuttenhAdmin.key[getArraySize(NuttenhAdmin.key)] = part
-
-end
 ----------------------------------------------------------------------------------------------------------
 
 -- Création d'un bouton permettant de réduire la fenêtre
 local close_button = CreateFrame("Button", "CloseButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
 close_button:SetPoint("TOPRIGHT", 0, 0)
 close_button:SetFrameStrata("HIGH")
-close_button:SetFrameLevel(4)
+close_button:SetFrameLevel(6)
 close_button:SetHeight(27)
 close_button:SetWidth(27)
 
@@ -64,12 +60,16 @@ local function toggleFrameSize()
 		NuttenhAdmin.main_frame:SetHeight(60)
 		NuttenhAdmin.main_frame.mission_list:Hide()
 		NuttenhAdmin.main_frame.settings:Hide()
+		NuttenhAdmin.main_frame.key_button:Hide()
+		NuttenhAdmin.main_frame.start_button:Hide()
 		isMinimized = true
 	else
 		-- On redonne à la fenêtre sa taille de base et on réaffiche les parties qui la compose
 		NuttenhAdmin.main_frame:SetHeight(500)
 		NuttenhAdmin.main_frame.mission_list:Show()
 		NuttenhAdmin.main_frame.settings:Show()
+		NuttenhAdmin.main_frame.key_button:Show()
+		NuttenhAdmin.main_frame.start_button:Show()
 		isMinimized = false
 	end
 end
@@ -303,12 +303,10 @@ pSelectMob:Hide()
 
 ----------------------------------------------------------------------------------------------------------
 
--- Cette fonction est éxécutée lorsque l'utilisateur choisit une option dans le menu
+-- Cette fonction est éxécutée lorsque l'utilisateur choisit une option dans le premier menu
 function pSelectMissionType:SetValue(value)
 	UIDropDownMenu_SetText(pSelectMissionType, missions_types[value])
 	pSelectMissionType.value = value - 1
-
-	print(pSelectMissionType.value)
 
 	pSelectNpc:Hide()
 	pSelectZone:Hide()
@@ -337,14 +335,39 @@ add_mission_button:SetText("Ajouter cette mission ->")
 
 add_mission_button:SetScript("OnClick", function(self)
 	if pSelectMissionType.value > 0 then
+
 		if pSelectMissionType.value == 1 then
-			addLineAdmin(missions_types[pSelectMissionType.value + 1] .. " : " .. dropdownSelectNpcValues[pSelectNpc.value + 1], pSelectMissionType.value, pSelectNpc.value)
+
+			if pSelectNpc.value ~= nil and pSelectNpc.value ~= 0 then
+				addLineAdmin(missions_types[pSelectMissionType.value + 1] .. " : " .. dropdownSelectNpcValues[pSelectNpc.value + 1], pSelectMissionType.value, pSelectNpc.value)
+			else
+				print("|cFFF547FF[Addon] [" .. addonName .. "] : Aucune valeur n'a été saisie !")
+			end
+
 		elseif pSelectMissionType.value == 2 then
-			addLineAdmin(missions_types[pSelectMissionType.value + 1] .. " : " .. dropdownSelectZoneValues[pSelectZone.value + 1], pSelectMissionType.value, pSelectZone.value)
+
+			if pSelectZone.value ~= nil and pSelectZone.value ~= 0 then
+				addLineAdmin(missions_types[pSelectMissionType.value + 1] .. " : " .. dropdownSelectZoneValues[pSelectZone.value + 1], pSelectMissionType.value, pSelectZone.value)
+			else
+				print("|cFFF547FF[Addon] [" .. addonName .. "] : Aucune valeur n'a été saisie !")
+			end
+
 		elseif pSelectMissionType.value == 3 then
-			addLineAdmin(missions_types[pSelectMissionType.value + 1] .. " : " .. dropdownSelectItemValues[pSelectItem.value + 1], pSelectMissionType.value, pSelectItem.value)
+
+			if pSelectItem.value ~= nil and pSelectItem.value ~= 0 then
+				addLineAdmin(missions_types[pSelectMissionType.value + 1] .. " : " .. dropdownSelectItemValues[pSelectItem.value + 1], pSelectMissionType.value, pSelectItem.value)
+			else
+				print("|cFFF547FF[Addon] [" .. addonName .. "] : Aucune valeur n'a été saisie !")
+			end
+
 		elseif pSelectMissionType.value == 4 then
-			addLineAdmin(missions_types[pSelectMissionType.value + 1] .. " : " .. dropdownSelectMobValues[pSelectMob.value + 1], pSelectMissionType.value, pSelectMob.value)
+			
+			if pSelectMob.value ~= nil and pSelectMob.value ~= 0 then
+				addLineAdmin(missions_types[pSelectMissionType.value + 1] .. " : " .. dropdownSelectMobValues[pSelectMob.value + 1], pSelectMissionType.value, pSelectMob.value)
+			else
+				print("|cFFF547FF[Addon] [" .. addonName .. "] : Aucune valeur n'a été saisie !")
+			end
+		
 		end
 	end
 end)
@@ -447,11 +470,18 @@ NuttenhAdmin.main_frame.key_button:SetWidth(150)
 NuttenhAdmin.main_frame.key_button:SetText("Générer la clé !")
 
 NuttenhAdmin.main_frame.key_button:SetScript("OnClick", function(self)
-	-- local k = NuttenhAdmin.key:gsub("% ", "")
+	local key = {}
+	local k = ""
 
 	for i=1, getArraySize(NuttenhAdmin.main_frame.mission_list.content) - 1 do
-		concatKey(NuttenhAdmin.main_frame.mission_list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.mission_list.content[i]["setting"])
+		key[getArraySize(key)] = NuttenhAdmin.main_frame.mission_list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.mission_list.content[i]["setting"]
 	end
+
+	for i=0, getArraySize(key) - 1 do
+		k = k .. tostring(key[i])
+	end
+
+	print(k)
 end)
 
 -- Bouton pour générer la clé 
@@ -462,7 +492,17 @@ NuttenhAdmin.main_frame.start_button:SetWidth(150)
 NuttenhAdmin.main_frame.start_button:SetText("Démarrer l'event !")
 
 NuttenhAdmin.main_frame.start_button:SetScript("OnClick", function(self)
-	-- local k = NuttenhAdmin.key:gsub("% ", "")
-	print("start " .. NuttenhAdmin.key .. " " .. UnitName("player"))
+	local key = {}
+	local k = ""
+
+	for i=1, getArraySize(NuttenhAdmin.main_frame.mission_list.content) - 1 do
+		key[getArraySize(key)] = NuttenhAdmin.main_frame.mission_list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.mission_list.content[i]["setting"]
+	end
+
+	for i=0, getArraySize(key) - 1 do
+		k = k .. tostring(key[i])
+	end
+
+	eventCommand("start " .. k .. " " .. UnitName("player"))
 	PlaySound("READYCHECK", "SFX")
 end)
