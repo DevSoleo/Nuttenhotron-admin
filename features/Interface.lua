@@ -1,3 +1,12 @@
+
+wait(0.1, function()
+	for i=1, getArraySize(vAGet("playingUsers")) do
+		addPlayerLine(vAGet("playingUsers")[i])
+	end
+end)
+
+
+
 -- Création de la fenêtre principale
 NuttenhAdmin.main_frame = CreateFrame("Frame", nil, UIParent)
 NuttenhAdmin.main_frame:SetFrameStrata("BACKGROUND")
@@ -30,6 +39,7 @@ NuttenhAdmin.main_frame:SetPoint("TOP", 20, -20)
 NuttenhAdmin.main_frame:Show()
 
 NuttenhAdmin.key = {}
+NuttenhAdmin.isStarted = false
 
 NuttenhAdmin.main_frame.title = NuttenhAdmin.main_frame:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.title:SetFont("Fonts\\FRIZQT__.ttf", 15)
@@ -64,18 +74,33 @@ local function toggleFrameSize()
 	if isMinimized == false then
 		-- On réduit la taille de la fenêtre et on masque les principales parties qui la compose
 		NuttenhAdmin.main_frame:SetHeight(55)
+		NuttenhAdmin.main_frame.player_list:Hide()
 		NuttenhAdmin.main_frame.mission_list:Hide()
 		NuttenhAdmin.main_frame.settings:Hide()
 		NuttenhAdmin.main_frame.key_button:Hide()
 		NuttenhAdmin.main_frame.start_button:Hide()
+
+		NuttenhAdmin.main_frame.stop_button:Hide()
+
 		isMinimized = true
 	else
 		-- On redonne à la fenêtre sa taille de base et on réaffiche les parties qui la compose
 		NuttenhAdmin.main_frame:SetHeight(500)
+		NuttenhAdmin.main_frame.player_list:Show()
 		NuttenhAdmin.main_frame.mission_list:Show()
 		NuttenhAdmin.main_frame.settings:Show()
 		NuttenhAdmin.main_frame.key_button:Show()
-		NuttenhAdmin.main_frame.start_button:Show()
+
+		if vAGet("isStarted") == true then
+			NuttenhAdmin.main_frame.start_button:Hide()
+			NuttenhAdmin.main_frame.stop_button:Show()
+		end
+
+		if vAGet("isStarted") == false then
+			NuttenhAdmin.main_frame.start_button:Show()
+			NuttenhAdmin.main_frame.stop_button:Hide()
+		end
+
 		isMinimized = false
 	end
 end
@@ -93,6 +118,9 @@ close_button:SetScript("OnClick", function(self, arg1)
 end)
 
 ----------------------------------------------------------------------------------------------------------
+
+
+
 
 -- On crée le menu de gauche, il servira à paramétrer les missions
 NuttenhAdmin.main_frame.settings = CreateFrame("Frame", "SettingsFrame", NuttenhAdmin.main_frame)
@@ -396,6 +424,166 @@ end)
 
 
 -- Mission List
+NuttenhAdmin.main_frame.player_list = CreateFrame("Frame", "MissionList", NuttenhAdmin.main_frame)
+NuttenhAdmin.main_frame.player_list:SetWidth(200)
+NuttenhAdmin.main_frame.player_list:SetHeight(200)
+NuttenhAdmin.main_frame.player_list:SetPoint("LEFT", 65, -10)
+NuttenhAdmin.main_frame.player_list:SetBackdrop({
+	edgeFile="Interface/Tooltips/UI-Tooltip-Border", 
+	tile=false,
+	tileSize=64, 
+	edgeSize=10, 
+	insets={
+		left=4,
+		right=4,
+		top=4,
+		bottom=4
+	}
+})
+
+local bg = NuttenhAdmin.main_frame.player_list:CreateTexture(nil, "BACKGROUND") 
+bg:SetAllPoints(NuttenhAdmin.main_frame.player_list) 
+bg:SetTexture(0, 0, 0, 0.1) 
+
+-- Mission list scroll bar
+local scrollframe = CreateFrame("ScrollFrame", nil, NuttenhAdmin.main_frame.player_list) 
+scrollframe:SetPoint("TOPLEFT", 10, -10) 
+scrollframe:SetPoint("BOTTOMRIGHT", -10, 10)
+
+local texture = scrollframe:CreateTexture() 
+texture:SetAllPoints() 
+-- texture:SetTexture(0.5, 0.5, 0.5, 1) 
+NuttenhAdmin.main_frame.player_list.scrollframe = scrollframe 
+
+--scrollbar 
+local scrollbar = CreateFrame("Slider", nil, scrollframe, "UIPanelScrollBarTemplate") 
+scrollbar:SetPoint("TOPLEFT", NuttenhAdmin.main_frame.player_list, "TOPRIGHT", -18, -18) 
+scrollbar:SetPoint("BOTTOMLEFT", NuttenhAdmin.main_frame.player_list, "BOTTOMRIGHT", -18, 18) 
+scrollbar:SetMinMaxValues(1, 220) 
+scrollbar.scrollStep = 1
+scrollbar:SetValueStep(scrollbar.scrollStep) 
+scrollbar:SetValue(0) 
+scrollbar:SetWidth(16) 
+scrollbar:SetScript("OnValueChanged", function (self, value) 
+	self:GetParent():SetVerticalScroll(value) 
+end)
+scrollbar.maxValue = 0
+
+local scrollbg = scrollbar:CreateTexture(nil, "BACKGROUND") 
+scrollbg:SetAllPoints(scrollbar) 
+scrollbg:SetTexture(0, 0, 0, 0) 
+NuttenhAdmin.main_frame.player_list.scrollbar = scrollbar 
+
+--content frame 
+NuttenhAdmin.main_frame.player_list.content = CreateFrame("Frame", nil, scrollframe) 
+NuttenhAdmin.main_frame.player_list.content:SetSize(250, 250) 
+
+scrollframe:SetScrollChild(NuttenhAdmin.main_frame.player_list.content)
+
+function addLineAdmin(text, mission_type, setting)
+	local lineNumber = getArraySize(NuttenhAdmin.main_frame.mission_list.content)
+	NuttenhAdmin.main_frame.mission_list.content[lineNumber] = NuttenhAdmin.main_frame.mission_list.content:CreateFontString(nil, "ARTWORK")
+	NuttenhAdmin.main_frame.mission_list.content[lineNumber]:SetFont("Fonts\\ARIALN.ttf", 12)
+	NuttenhAdmin.main_frame.mission_list.content[lineNumber]:SetPoint("TOPLEFT", 0, 10 - (lineNumber * 20))
+	NuttenhAdmin.main_frame.mission_list.content[lineNumber]:SetText(lineNumber .. ". " .. tostring(text))
+	NuttenhAdmin.main_frame.mission_list.content[lineNumber]:SetTextColor(1, 1, 1, 1)
+	NuttenhAdmin.main_frame.mission_list.content[lineNumber]["mission_type"] = mission_type
+	NuttenhAdmin.main_frame.mission_list.content[lineNumber]["setting"] = setting
+end
+
+function removeLastLine()
+	local lineNumber = getArraySize(NuttenhAdmin.main_frame.mission_list.content) - 1
+
+	NuttenhAdmin.main_frame.mission_list.content[lineNumber]:Hide()
+	NuttenhAdmin.main_frame.mission_list.content[lineNumber] = nil
+end
+
+-- Bouton pour générer la clé 
+NuttenhAdmin.main_frame.key_button = CreateFrame("Button", "GenerateKeyButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
+NuttenhAdmin.main_frame.key_button:SetPoint("BOTTOMLEFT", 90, 15)
+NuttenhAdmin.main_frame.key_button:SetHeight(25)
+NuttenhAdmin.main_frame.key_button:SetWidth(150)
+NuttenhAdmin.main_frame.key_button:SetText("Générer la clé !")
+
+NuttenhAdmin.main_frame.key_button:SetScript("OnClick", function(self)
+	local key = {}
+	local k = ""
+
+	for i=1, getArraySize(NuttenhAdmin.main_frame.player_list.content) - 1 do
+		key[getArraySize(key)] = NuttenhAdmin.main_frame.player_list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.player_list.content[i]["setting"]
+	end
+
+	for i=0, getArraySize(key) - 1 do
+		k = k .. tostring(key[i])
+	end
+
+	print(k)
+end)
+
+function removePlayerLines()
+	for i=1, getArraySize(NuttenhAdmin.main_frame.player_list.content) - 1 do
+		NuttenhAdmin.main_frame.player_list.content[i]:Hide()
+		NuttenhAdmin.main_frame.player_list.content[i] = nil
+	end
+		
+end
+
+-- Bouton pour démarrer l'event 
+NuttenhAdmin.main_frame.start_button = CreateFrame("Button", "StartEventButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
+NuttenhAdmin.main_frame.start_button:SetPoint("BOTTOMRIGHT", -90, 15)
+NuttenhAdmin.main_frame.start_button:SetHeight(25)
+NuttenhAdmin.main_frame.start_button:SetWidth(150)
+NuttenhAdmin.main_frame.start_button:SetText("Démarrer l'event !")
+
+NuttenhAdmin.main_frame.start_button:SetScript("OnClick", function(self)
+	if getArraySize(NuttenhAdmin.main_frame.mission_list.content) - 1 > 0 then
+		local key = {}
+		local k = ""
+
+		for i=1, getArraySize(NuttenhAdmin.main_frame.mission_list.content) - 1 do
+			key[getArraySize(key)] = NuttenhAdmin.main_frame.mission_list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.mission_list.content[i]["setting"]
+		end
+
+		for i=0, getArraySize(key) - 1 do
+			k = k .. tostring(key[i])
+		end
+
+		eventCommand("start " .. k .. " " .. UnitName("player"))
+		PlaySound("READYCHECK", "SFX")
+
+		NuttenhAdmin.main_frame.start_button:Hide()
+		NuttenhAdmin.main_frame.stop_button:Show()
+	end
+end)
+
+-- Bouton pour arrêter l'event
+NuttenhAdmin.main_frame.stop_button = CreateFrame("Button", "StopEventButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
+NuttenhAdmin.main_frame.stop_button:SetPoint("BOTTOMRIGHT", -90, 15)
+NuttenhAdmin.main_frame.stop_button:SetHeight(25)
+NuttenhAdmin.main_frame.stop_button:SetWidth(150)
+NuttenhAdmin.main_frame.stop_button:SetText("Arrêter l'event !")
+NuttenhAdmin.main_frame.stop_button:Hide()
+
+NuttenhAdmin.main_frame.stop_button:SetScript("OnClick", function(self)
+	eventCommand("stop")
+
+	removePlayerLines()
+	
+	NuttenhAdmin.main_frame.start_button:Show()
+	NuttenhAdmin.main_frame.stop_button:Hide()
+end)
+
+
+
+
+
+
+
+
+
+
+
+-- Mission List
 NuttenhAdmin.main_frame.mission_list = CreateFrame("Frame", "MissionList", NuttenhAdmin.main_frame)
 NuttenhAdmin.main_frame.mission_list:SetWidth(250)
 NuttenhAdmin.main_frame.mission_list:SetHeight(400)
@@ -452,85 +640,25 @@ NuttenhAdmin.main_frame.mission_list.content:SetSize(250, 250)
 
 scrollframe:SetScrollChild(NuttenhAdmin.main_frame.mission_list.content)
 
-function addLineAdmin(text, mission_type, setting)
-	local lineNumber = getArraySize(NuttenhAdmin.main_frame.mission_list.content)
-	NuttenhAdmin.main_frame.mission_list.content[lineNumber] = NuttenhAdmin.main_frame.mission_list.content:CreateFontString(nil, "ARTWORK")
-	NuttenhAdmin.main_frame.mission_list.content[lineNumber]:SetFont("Fonts\\ARIALN.ttf", 12)
-	NuttenhAdmin.main_frame.mission_list.content[lineNumber]:SetPoint("TOPLEFT", 0, 10 - (lineNumber * 20))
-	NuttenhAdmin.main_frame.mission_list.content[lineNumber]:SetText(lineNumber .. ". " .. tostring(text))
-	NuttenhAdmin.main_frame.mission_list.content[lineNumber]:SetTextColor(1, 1, 1, 1)
-	NuttenhAdmin.main_frame.mission_list.content[lineNumber]["mission_type"] = mission_type
-	NuttenhAdmin.main_frame.mission_list.content[lineNumber]["setting"] = setting
+function addPlayerLine(playerName)
+	local lineNumber = getArraySize(NuttenhAdmin.main_frame.player_list.content)
+	NuttenhAdmin.main_frame.player_list.content[lineNumber] = NuttenhAdmin.main_frame.player_list.content:CreateFontString(nil, "ARTWORK")
+	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetFont("Fonts\\ARIALN.ttf", 12)
+	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetPoint("TOPLEFT", 0, 10 - (lineNumber * 20))
+	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetText(lineNumber .. ". " .. playerName)
+	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetTextColor(1, 1, 1, 1)
 end
 
-function removeLastLine()
-	local lineNumber = getArraySize(NuttenhAdmin.main_frame.mission_list.content) - 1
 
-	NuttenhAdmin.main_frame.mission_list.content[lineNumber]:Hide()
-	NuttenhAdmin.main_frame.mission_list.content[lineNumber] = nil
-end
-
--- Bouton pour générer la clé 
-NuttenhAdmin.main_frame.key_button = CreateFrame("Button", "GenerateKeyButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.key_button:SetPoint("BOTTOMLEFT", 90, 15)
-NuttenhAdmin.main_frame.key_button:SetHeight(25)
-NuttenhAdmin.main_frame.key_button:SetWidth(150)
-NuttenhAdmin.main_frame.key_button:SetText("Générer la clé !")
-
-NuttenhAdmin.main_frame.key_button:SetScript("OnClick", function(self)
-	local key = {}
-	local k = ""
-
-	for i=1, getArraySize(NuttenhAdmin.main_frame.mission_list.content) - 1 do
-		key[getArraySize(key)] = NuttenhAdmin.main_frame.mission_list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.mission_list.content[i]["setting"]
-	end
-
-	for i=0, getArraySize(key) - 1 do
-		k = k .. tostring(key[i])
-	end
-
-	print(k)
-end)
-
--- Bouton pour démarrer l'event 
-NuttenhAdmin.main_frame.start_button = CreateFrame("Button", "StartEventButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.start_button:SetPoint("BOTTOMRIGHT", -90, 15)
-NuttenhAdmin.main_frame.start_button:SetHeight(25)
-NuttenhAdmin.main_frame.start_button:SetWidth(150)
-NuttenhAdmin.main_frame.start_button:SetText("Démarrer l'event !")
-
-NuttenhAdmin.main_frame.start_button:SetScript("OnClick", function(self)
-	if getArraySize(NuttenhAdmin.main_frame.mission_list.content) - 1 > 0 then
-		local key = {}
-		local k = ""
-
-		for i=1, getArraySize(NuttenhAdmin.main_frame.mission_list.content) - 1 do
-			key[getArraySize(key)] = NuttenhAdmin.main_frame.mission_list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.mission_list.content[i]["setting"]
-		end
-
-		for i=0, getArraySize(key) - 1 do
-			k = k .. tostring(key[i])
-		end
-
-		eventCommand("start " .. k .. " " .. UnitName("player"))
-		PlaySound("READYCHECK", "SFX")
-
+-- Bug réglé avec un wait ¯\_(ツ)_/¯
+wait(0.1, function()
+	if vAGet("isStarted") == true then
+	--print("je suis vrai alors le boutton doit être en mode ARRETER")
 		NuttenhAdmin.main_frame.start_button:Hide()
 		NuttenhAdmin.main_frame.stop_button:Show()
+	else
+	--print("je suis faux alors le boutton doit être en mode DEMARRER")
+		NuttenhAdmin.main_frame.start_button:Show()
+		NuttenhAdmin.main_frame.stop_button:Hide()
 	end
-end)
-
--- Bouton pour arrêter l'event
-NuttenhAdmin.main_frame.stop_button = CreateFrame("Button", "StopEventButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.stop_button:SetPoint("BOTTOMRIGHT", -90, 15)
-NuttenhAdmin.main_frame.stop_button:SetHeight(25)
-NuttenhAdmin.main_frame.stop_button:SetWidth(150)
-NuttenhAdmin.main_frame.stop_button:SetText("Arrêter l'event !")
-NuttenhAdmin.main_frame.stop_button:Hide()
-
-NuttenhAdmin.main_frame.stop_button:SetScript("OnClick", function(self)
-	eventCommand("stop")
-
-	NuttenhAdmin.main_frame.start_button:Show()
-	NuttenhAdmin.main_frame.stop_button:Hide()
 end)

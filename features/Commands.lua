@@ -76,6 +76,7 @@ function eventCommand(msg)
 	  		if vAGet("isStarted") == true then
 				vASave("isStarted", false)
 				vASave("key", "")
+				vASave("playingUsers", {})
 
 				playingUsers = {}
 

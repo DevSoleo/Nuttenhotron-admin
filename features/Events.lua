@@ -17,6 +17,7 @@ chatGuildEvent:SetScript("OnEvent", function(self, event, message, sender, ...)
 		if getArrayIndex(vAGet("playingUsers"), sender) ~= nil then
 			SendChatMessage("Vous êtes déjà inscrit à l'event en cours ou aucun event est en cours.", "WHISPER", nil, sender)
 		else
+			addPlayerLine(sender)
 			_Admin["playingUsers"][table.getn(vAGet("playingUsers")) + 1] = sender
 		end
 	end
