@@ -115,8 +115,6 @@ SlashCmdList["REWARD"] = function(msg)
 				SendChatMessage(UnitName("player") .. " a ajouté x" .. amount .. " Pièces d'Or en récompense !", "GUILD")
 			end
 		elseif command[1] == "remove" then
-			local amount = tonumber(command[3])
-
 			SendChatMessage(UnitName("player") .. " a retiré une récompense.", "GUILD")
 		else
 			print("|cFFF547FF[Addon] [" .. addonName .. "] : Commande invalide !")

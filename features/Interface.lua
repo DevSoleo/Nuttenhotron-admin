@@ -1,12 +1,3 @@
-
-wait(0.1, function()
-	for i=1, getArraySize(vAGet("playingUsers")) do
-		addPlayerLine(vAGet("playingUsers")[i])
-	end
-end)
-
-
-
 -- Création de la fenêtre principale
 NuttenhAdmin.main_frame = CreateFrame("Frame", nil, UIParent)
 NuttenhAdmin.main_frame:SetFrameStrata("BACKGROUND")
@@ -146,7 +137,7 @@ NuttenhAdmin.main_frame.settings:SetBackdrop({
 local dropdownSelectNpcValues = {"Nom du PNJ"}
 
 for o=1, getArraySize(NPC_LIST) do
-	dropdownSelectNpcValues[o + 1] = NPC_LIST[tostring(o)]["name"]
+	dropdownSelectNpcValues[o + 1] = NPC_LIST[tostring(o)]["name"][GetLocale()]
 end
 
 local dropdownSelectNpcValue = 0
