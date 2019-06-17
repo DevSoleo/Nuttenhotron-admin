@@ -497,18 +497,21 @@ NuttenhAdmin.main_frame.key_button:SetWidth(150)
 NuttenhAdmin.main_frame.key_button:SetText("Générer la clé !")
 
 NuttenhAdmin.main_frame.key_button:SetScript("OnClick", function(self)
-	local key = {}
-	local k = ""
+	if getArraySize(NuttenhAdmin.main_frame.mission_list.content) - 1 > 0 then
+		local key = {}
+		local k = ""
 
-	for i=1, getArraySize(NuttenhAdmin.main_frame.player_list.content) - 1 do
-		key[getArraySize(key)] = NuttenhAdmin.main_frame.player_list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.player_list.content[i]["setting"]
+		for i=1, getArraySize(NuttenhAdmin.main_frame.mission_list.content) - 1 do
+			key[getArraySize(key)] = NuttenhAdmin.main_frame.mission_list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.mission_list.content[i]["setting"] .. " "
+		end
+
+		for i=0, getArraySize(key) - 1 do
+			k = k .. tostring(key[i])
+		end
+
+		print(k)
+
 	end
-
-	for i=0, getArraySize(key) - 1 do
-		k = k .. tostring(key[i])
-	end
-
-	print(k)
 end)
 
 function removePlayerLines()
@@ -532,12 +535,14 @@ NuttenhAdmin.main_frame.start_button:SetScript("OnClick", function(self)
 		local k = ""
 
 		for i=1, getArraySize(NuttenhAdmin.main_frame.mission_list.content) - 1 do
-			key[getArraySize(key)] = NuttenhAdmin.main_frame.mission_list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.mission_list.content[i]["setting"]
+			key[getArraySize(key)] = NuttenhAdmin.main_frame.mission_list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.mission_list.content[i]["setting"] .. " "
 		end
 
 		for i=0, getArraySize(key) - 1 do
 			k = k .. tostring(key[i])
 		end
+
+		print(k)
 
 		eventCommand("start " .. k .. " " .. UnitName("player"))
 		PlaySound("READYCHECK", "SFX")

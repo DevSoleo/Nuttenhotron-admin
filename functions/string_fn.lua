@@ -26,6 +26,7 @@ function crypt(k)
 	local c = ""
 
 	local t = {"tk", "u4", "0k", "2s", "ny", "dy", "9l", "nn", "31", "rm"}
+	t[0] = "kw"
 
 	for i,v in ipairs(s) do
 	   c = c .. t[tonumber(v)]
@@ -35,8 +36,8 @@ function crypt(k)
 end
 
 function cryptStr(text)
-	local t = {"xt", "bm", "7j", "ag", "1l", "bn", "zb", "5e", "e4", "pl", "n2", "id", "za", "ca", "jn", "hy", "71", "49", "n9", "5f", "ob", "2h", "an", "bv", "vo"}
-	local l = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"}
+	local t = {"xt", "bm", "7j", "ag", "1l", "bn", "zb", "5e", "e4", "pl", "n2", "id", "za", "ca", "jn", "hy", "71", "49", "n9", "5f", "ob", "2h", "an", "bv", "vo", "rk"}
+	local l = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "\'"}
 
 	local s = splitByChunk(k, 1)
 	local c = ""

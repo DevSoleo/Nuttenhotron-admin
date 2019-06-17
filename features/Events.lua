@@ -20,5 +20,7 @@ chatGuildEvent:SetScript("OnEvent", function(self, event, message, sender, ...)
 			addPlayerLine(sender)
 			_Admin["playingUsers"][table.getn(vAGet("playingUsers")) + 1] = sender
 		end
+	elseif string.find(message, "L'évènement est terminé !") then
+		vASmoothClear()
 	end
 end)

@@ -37,8 +37,12 @@ function eventCommand(msg)
 						minutes = "0" .. tostring(minutes)
 					end
 
-					local s = splitByChunk(vAGet("key"), 6 * 2)
+					local s = split(command[2], " ")
 					local c = ""
+
+					for i=1, getArraySize(s) do
+						print(s[i])
+					end
 
 					for i,v in ipairs(s) do
 					    c = c .. " " .. crypt(v)
@@ -74,9 +78,7 @@ function eventCommand(msg)
 			end
 		elseif command[1] == "stop" then
 	  		if vAGet("isStarted") == true then
-				vASave("isStarted", false)
-				vASave("key", "")
-				vASave("playingUsers", {})
+				vASmoothClear()
 
 				playingUsers = {}
 
