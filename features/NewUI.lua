@@ -535,6 +535,31 @@ NuttenhAdmin.main_frame.rewards:SetBackdrop({
 	}
 })
 
+-- Items List
+NuttenhAdmin.main_frame.rewards.items = CreateFrame("Frame", "MainFrame_RewardsFrame_ItemsList", NuttenhAdmin.main_frame.rewards)
+NuttenhAdmin.main_frame.rewards.items:SetWidth(200)
+NuttenhAdmin.main_frame.rewards.items:SetHeight(200)
+NuttenhAdmin.main_frame.rewards.items:SetPoint("TOP", 0, -25)
+NuttenhAdmin.main_frame.rewards.items:SetBackdrop({
+	edgeFile="Interface/Tooltips/UI-Tooltip-Border", 
+	tile=false,
+	tileSize=64, 
+	edgeSize=10, 
+	insets={
+		left=4,
+		right=4,
+		top=4,
+		bottom=4
+	}
+})
+
+-- Affichage du nombre de P.O. à offrir au gagnant
+NuttenhAdmin.main_frame.rewards.items.gold_value = NuttenhAdmin.main_frame.rewards.items:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.rewards.items.gold_value:SetFont("Fonts\\FRIZQT__.ttf", 12)
+NuttenhAdmin.main_frame.rewards.items.gold_value:SetPoint("BOTTOM", 0, 20)
+NuttenhAdmin.main_frame.rewards.items.gold_value:SetText("PAS DSOUS !")
+NuttenhAdmin.main_frame.rewards.items.gold_value:SetTextColor(1, 1, 1, 1)
+
 -- Titre pour les P.O.
 NuttenhAdmin.main_frame.rewards.gold_title = NuttenhAdmin.main_frame.rewards:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.rewards.gold_title:SetFont("Fonts\\FRIZQT__.ttf", 10)
@@ -568,6 +593,7 @@ NuttenhAdmin.main_frame.rewards.gold_button:SetText("OK")
 
 NuttenhAdmin.main_frame.rewards.gold_button:SetScript("OnClick", function(self)
 	print("Add gold : " .. NuttenhAdmin.main_frame.rewards.gold_input:GetText())
+	NuttenhAdmin.main_frame.rewards.items.gold_value:SetText(GetCoinTextureString(NuttenhAdmin.main_frame.rewards.gold_input:GetText() * 10000))
 end)
 
 NuttenhAdmin.main_frame.rewards.item_input = CreateFrame("EditBox", "MissionFrame_RewardFrame_ItemInput", NuttenhAdmin.main_frame.rewards, "InputBoxTemplate")
@@ -614,20 +640,4 @@ NuttenhAdmin.main_frame.rewards.remove_button:SetScript("OnClick", function(self
 	print("Remove last item")
 end)
 
--- Rewards Frame
-NuttenhAdmin.main_frame.rewards.items = CreateFrame("Frame", "MainFrame_RewardsFrame", NuttenhAdmin.main_frame.rewards)
-NuttenhAdmin.main_frame.rewards.items:SetWidth(200)
-NuttenhAdmin.main_frame.rewards.items:SetHeight(200)
-NuttenhAdmin.main_frame.rewards.items:SetPoint("TOP", 0, -25)
-NuttenhAdmin.main_frame.rewards.items:SetBackdrop({
-	edgeFile="Interface/Tooltips/UI-Tooltip-Border", 
-	tile=false,
-	tileSize=64, 
-	edgeSize=10, 
-	insets={
-		left=4,
-		right=4,
-		top=4,
-		bottom=4
-	}
-})
+
