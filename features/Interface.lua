@@ -6,7 +6,7 @@ NuttenhAdmin.main_frame:EnableMouse(true)
 NuttenhAdmin.main_frame:RegisterForDrag("LeftButton") -- Définit le clic gauche comme le bouton à utiliser pour déplacer la fenêtre
 NuttenhAdmin.main_frame:SetScript("OnDragStart", NuttenhAdmin.main_frame.StartMoving)  -- frame.StartMoving
 NuttenhAdmin.main_frame:SetScript("OnDragStop", NuttenhAdmin.main_frame.StopMovingOrSizing) -- frame.StopMovingOrSizing
-NuttenhAdmin.main_frame:SetWidth(600)
+NuttenhAdmin.main_frame:SetWidth(900)
 NuttenhAdmin.main_frame:SetHeight(500)
 NuttenhAdmin.main_frame:SetFrameLevel(5)
 
@@ -110,14 +110,64 @@ end)
 
 ----------------------------------------------------------------------------------------------------------
 
-
-
-
 -- On crée le menu de gauche, il servira à paramétrer les missions
+NuttenhAdmin.main_frame.rewards = CreateFrame("Frame", "RewardsFrame", NuttenhAdmin.main_frame)
+NuttenhAdmin.main_frame.rewards:SetWidth(250)
+NuttenhAdmin.main_frame.rewards:SetHeight(400)
+NuttenhAdmin.main_frame.rewards:SetPoint("LEFT", 40, 0)
+
+NuttenhAdmin.main_frame.rewards:SetBackdrop({
+	edgeFile="Interface/Tooltips/UI-Tooltip-Border", 
+	tile=false,
+	tileSize=64, 
+	edgeSize=10, 
+	insets={
+		left=4,
+		right=4,
+		top=4,
+		bottom=4
+	}
+})
+
+-- 85 = hauteur text input
+NuttenhAdmin.main_frame.rewards.input_text = CreateFrame("EditBox", "RewardInputText", NuttenhAdmin.main_frame.rewards, "InputBoxTemplate")
+NuttenhAdmin.main_frame.rewards.input_text:SetPoint("BOTTOM", 2, 85)
+NuttenhAdmin.main_frame.rewards.input_text:SetHeight(25)
+NuttenhAdmin.main_frame.rewards.input_text:SetWidth(190)
+
+-- Bouton ajouter une récompense
+NuttenhAdmin.main_frame.rewards.add_button = CreateFrame("Button", "AddRewardButton", NuttenhAdmin.main_frame.rewards, "GameMenuButtonTemplate")
+NuttenhAdmin.main_frame.rewards.add_button:SetPoint("BOTTOM", 0, 50)
+NuttenhAdmin.main_frame.rewards.add_button:SetHeight(25)
+NuttenhAdmin.main_frame.rewards.add_button:SetWidth(200)
+NuttenhAdmin.main_frame.rewards.add_button:SetText("Ajouter cet item")
+
+NuttenhAdmin.main_frame.rewards.add_button:SetScript("OnClick", function(self)
+	print("ID de l'item : " .. NuttenhAdmin.main_frame.rewards.input_text:GetText())
+end)
+
+
+-- Bouton supprimer la dernière mission
+NuttenhAdmin.main_frame.rewards.remove_button = CreateFrame("Button", "RemoveRewardButton", NuttenhAdmin.main_frame.rewards, "GameMenuButtonTemplate")
+NuttenhAdmin.main_frame.rewards.remove_button:SetPoint("BOTTOM", 0, 15)
+NuttenhAdmin.main_frame.rewards.remove_button:SetHeight(25)
+NuttenhAdmin.main_frame.rewards.remove_button:SetWidth(200)
+NuttenhAdmin.main_frame.rewards.remove_button:SetText("Supprimer le dernier item")
+
+NuttenhAdmin.main_frame.rewards.remove_button:SetScript("OnClick", function(self)
+	print("ID de l'item : " .. NuttenhAdmin.main_frame.rewards.input_text:GetText())
+end)
+
+
+
+
+
+
+-- On crée le menu du milieu, il servira à paramétrer les missions
 NuttenhAdmin.main_frame.settings = CreateFrame("Frame", "SettingsFrame", NuttenhAdmin.main_frame)
 NuttenhAdmin.main_frame.settings:SetWidth(250)
 NuttenhAdmin.main_frame.settings:SetHeight(400)
-NuttenhAdmin.main_frame.settings:SetPoint("LEFT", 40, 0)
+NuttenhAdmin.main_frame.settings:SetPoint("CENTER", 0, 0)
 
 NuttenhAdmin.main_frame.settings:SetBackdrop({
 	edgeFile="Interface/Tooltips/UI-Tooltip-Border", 
@@ -410,15 +460,11 @@ remove_mission_button:SetScript("OnClick", function(self)
 	end
 end)
 
-
-
-
-
 -- Mission List
-NuttenhAdmin.main_frame.player_list = CreateFrame("Frame", "MissionList", NuttenhAdmin.main_frame)
+NuttenhAdmin.main_frame.player_list = CreateFrame("Frame", "MissionList", NuttenhAdmin.main_frame.settings)
 NuttenhAdmin.main_frame.player_list:SetWidth(200)
 NuttenhAdmin.main_frame.player_list:SetHeight(200)
-NuttenhAdmin.main_frame.player_list:SetPoint("LEFT", 65, -10)
+NuttenhAdmin.main_frame.player_list:SetPoint("LEFT", 25, -10)
 NuttenhAdmin.main_frame.player_list:SetBackdrop({
 	edgeFile="Interface/Tooltips/UI-Tooltip-Border", 
 	tile=false,
@@ -491,7 +537,7 @@ end
 
 -- Bouton pour générer la clé 
 NuttenhAdmin.main_frame.key_button = CreateFrame("Button", "GenerateKeyButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.key_button:SetPoint("BOTTOMLEFT", 90, 15)
+NuttenhAdmin.main_frame.key_button:SetPoint("BOTTOM", 0, 15)
 NuttenhAdmin.main_frame.key_button:SetHeight(25)
 NuttenhAdmin.main_frame.key_button:SetWidth(150)
 NuttenhAdmin.main_frame.key_button:SetText("Générer la clé !")
