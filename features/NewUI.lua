@@ -669,6 +669,10 @@ NuttenhAdmin.main_frame.rewards.item_button:SetScript("OnClick", function(self)
 	local id = NuttenhAdmin.main_frame.rewards.item_input:GetText()
 	local amount = NuttenhAdmin.main_frame.rewards.amount_input:GetText()
 
+	if amount == nil or amount == 0 or amount == "" then
+		amount = 1
+	end
+
 	addItem(id, amount)
 end)
 
@@ -702,54 +706,54 @@ function displayItems()
 		local itemId = NuttenhAdmin.main_frame.items[i]["id"]
 		local amount = NuttenhAdmin.main_frame.items[i]["amount"]
 
-		local nList = i
+		if GetItemInfo(itemId) ~= nil then
+			local nList = i
 
-		local x = 23 + (60 * mod(nList - 1, 3))
-		local y = -20
+			local x = 23 + (60 * mod(nList - 1, 3))
+			local y = -20
 
-		if nList == 3 or nList == 6 then
-			x = 23 + (60 * 2)
+			if nList == 3 or nList == 6 then
+				x = 23 + (60 * 2)
+			end
+
+			if nList > 3 then
+				y = -90
+			end
+
+			NuttenhAdmin.main_frame.itemsFrames[i] = CreateFrame("Button", nil, NuttenhAdmin.main_frame.rewards.items)
+			NuttenhAdmin.main_frame.itemsFrames[i]:SetFrameStrata("BACKGROUND")
+			NuttenhAdmin.main_frame.itemsFrames[i]:SetBackdropBorderColor(255, 0, 0, 1)
+			NuttenhAdmin.main_frame.itemsFrames[i]:SetPoint("TOPLEFT", x, y)
+			NuttenhAdmin.main_frame.itemsFrames[i]:SetWidth(35) -- Set these to whatever height/width is needed 
+			NuttenhAdmin.main_frame.itemsFrames[i]:SetHeight(35) -- for your Texture
+
+			local t = NuttenhAdmin.main_frame.itemsFrames[i]:CreateTexture(nil,"BACKGROUND")
+			t:SetTexture(GetItemIcon(itemId))
+			t:SetAllPoints(NuttenhAdmin.main_frame.itemsFrames[i])
+			NuttenhAdmin.main_frame.itemsFrames[i].texture = t
+
+			NuttenhAdmin.main_frame.itemsFrames[i]:SetScript("OnClick", function(self)
+				removeItem(i)
+				displayItems()
+			end)
+
+			NuttenhAdmin.main_frame.itemsFrames[i]:SetScript("OnEnter", function(self)
+				local name, link = GetItemInfo(itemId)
+			  	GameTooltip:SetOwner(NuttenhAdmin.main_frame.itemsFrames[i], "ANCHOR_CURSOR")
+			  	GameTooltip:SetHyperlink(link)
+			  	GameTooltip:Show()
+			end)
+
+			NuttenhAdmin.main_frame.itemsFrames[i]:SetScript("OnLeave", function(self)
+				GameTooltip:Hide()
+			end)
+
+			NuttenhAdmin.main_frame.itemsFrames[i].text = NuttenhAdmin.main_frame.itemsFrames[i]:CreateFontString(nil, "OVERLAY")
+			NuttenhAdmin.main_frame.itemsFrames[i].text:SetPoint("BOTTOMRIGHT", NuttenhAdmin.main_frame.itemsFrames[i], 0, 0)
+			NuttenhAdmin.main_frame.itemsFrames[i].text:SetFont("Fonts\\FRIZQT__.TTF", 14, "OUTLINE")
+			NuttenhAdmin.main_frame.itemsFrames[i].text:SetTextColor(255, 255, 255)
+			NuttenhAdmin.main_frame.itemsFrames[i].text:SetText(amount)
 		end
-
-		if nList > 3 then
-			y = -90
-		end
-
-		NuttenhAdmin.main_frame.itemsFrames[i] = CreateFrame("Button", nil, NuttenhAdmin.main_frame.rewards.items)
-		NuttenhAdmin.main_frame.itemsFrames[i]:SetFrameStrata("BACKGROUND")
-		NuttenhAdmin.main_frame.itemsFrames[i]:SetBackdropBorderColor(255, 0, 0, 1)
-		NuttenhAdmin.main_frame.itemsFrames[i]:SetPoint("TOPLEFT", x, y)
-		NuttenhAdmin.main_frame.itemsFrames[i]:SetWidth(35) -- Set these to whatever height/width is needed 
-		NuttenhAdmin.main_frame.itemsFrames[i]:SetHeight(35) -- for your Texture
-
-		local t = NuttenhAdmin.main_frame.itemsFrames[i]:CreateTexture(nil,"BACKGROUND")
-		t:SetTexture(GetItemIcon(itemId))
-		t:SetAllPoints(NuttenhAdmin.main_frame.itemsFrames[i])
-		NuttenhAdmin.main_frame.itemsFrames[i].texture = t
-
-		GetItemInfo(itemId)
-
-		NuttenhAdmin.main_frame.itemsFrames[i]:SetScript("OnClick", function(self)
-			removeItem(i)
-			displayItems()
-		end)
-
-		NuttenhAdmin.main_frame.itemsFrames[i]:SetScript("OnEnter", function(self)
-			local name, link = GetItemInfo(itemId)
-		  	GameTooltip:SetOwner(NuttenhAdmin.main_frame.itemsFrames[i], "ANCHOR_CURSOR")
-		  	GameTooltip:SetHyperlink(link)
-		  	GameTooltip:Show()
-		end)
-
-		NuttenhAdmin.main_frame.itemsFrames[i]:SetScript("OnLeave", function(self)
-			GameTooltip:Hide()
-		end)
-
-		NuttenhAdmin.main_frame.itemsFrames[i].text = NuttenhAdmin.main_frame.itemsFrames[i]:CreateFontString(nil, "OVERLAY")
-		NuttenhAdmin.main_frame.itemsFrames[i].text:SetPoint("BOTTOMRIGHT", NuttenhAdmin.main_frame.itemsFrames[i], 0, 0)
-		NuttenhAdmin.main_frame.itemsFrames[i].text:SetFont("Fonts\\FRIZQT__.TTF", 14, "OUTLINE")
-		NuttenhAdmin.main_frame.itemsFrames[i].text:SetTextColor(255, 255, 255)
-		NuttenhAdmin.main_frame.itemsFrames[i].text:SetText(amount)
 	end
 end
 
