@@ -90,31 +90,34 @@ function eventCommand(msg)
 	end
 end
 
-SlashCmdList["EVENT"] = function(msg)
-	eventCommand(msg)
-end
-
-SlashCmdList["REWARD"] = function(msg)
+function rewardCommand(msg)
 	local command = split(msg, " ")
 
 	if vAGet("isStarted") == false or vAGet("isStarted") == nil then
 		if command[1] == "add" then
-				
+
 			local amount = tonumber(command[3])
 
-			if command[2] ~= "gold" then
-				local itemName = GetItemInfo(tonumber(command[2]))
-			
-				SendChatMessage(UnitName("player") .. " a ajouté x" .. amount .. " " .. itemName .. " (" .. command[2] .. ") en récompense !", "GUILD")
+			-- La quantité doit être supérieure à 0
+			if amount > 0 then				
+
+				-- On ajoute des P.O. en récompense si le 2ème argument est égal à "gold"
+				if command[2] == "gold" then
+					SendChatMessage(UnitName("player") .. " a ajouté x" .. amount .. " P.O. en récompense !", "GUILD")
+				else -- Sinon on ajoute un item
+					local itemName = GetItemInfo(tonumber(command[2]))
 				
-				if getArraySize(vAGet("rewards")) == nil then
-					vASave("rewards", {})
-					_Admin["rewards"]["0"] = {id=id, amount=amount}
-				else
-					_Admin["rewards"][getArraySize(vAGet("rewards"))] = {id=id, amount=amount}
+					SendChatMessage(UnitName("player") .. " a ajouté x" .. amount .. " " .. itemName .. " (" .. command[2] .. ") en récompense !", "GUILD")
+					
+					if getArraySize(vAGet("rewards")) == nil then
+						vASave("rewards", {})
+						_Admin["rewards"]["0"] = {id=id, amount=amount}
+					else
+						_Admin["rewards"][getArraySize(vAGet("rewards"))] = {id=id, amount=amount}
+					end
 				end
 			else
-				SendChatMessage(UnitName("player") .. " a ajouté x" .. amount .. " Pièces d'Or en récompense !", "GUILD")
+				print("|cFFF547FF[Addon] [" .. addonName .. "] : Commande invalide !")
 			end
 		elseif command[1] == "remove" then
 			SendChatMessage(UnitName("player") .. " a retiré une récompense.", "GUILD")
@@ -124,4 +127,12 @@ SlashCmdList["REWARD"] = function(msg)
 	else
 		print("|cFFF547FF[Addon] [" .. addonName .. "] : Un event est déjà en cours !")
 	end
+end
+
+SlashCmdList["EVENT"] = function(msg)
+	eventCommand(msg)
+end
+
+SlashCmdList["REWARD"] = function(msg)
+	rewardCommand(msg)
 end
