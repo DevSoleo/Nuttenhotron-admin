@@ -573,13 +573,13 @@ NuttenhAdmin.main_frame.rewards.items.gold_value:SetTextColor(1, 1, 1, 1)
 -- Titre pour les P.O.
 NuttenhAdmin.main_frame.rewards.gold_title = NuttenhAdmin.main_frame.rewards:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.rewards.gold_title:SetFont("Fonts\\FRIZQT__.ttf", 10)
-NuttenhAdmin.main_frame.rewards.gold_title:SetPoint("BOTTOMLEFT", 29, 92)
+NuttenhAdmin.main_frame.rewards.gold_title:SetPoint("BOTTOMLEFT", 29, 70 + 7)
 NuttenhAdmin.main_frame.rewards.gold_title:SetText("Nombre de pièces d'or")
 NuttenhAdmin.main_frame.rewards.gold_title:SetTextColor(1, 1, 1, 1)
 
 -- Input pour les P.O.
 NuttenhAdmin.main_frame.rewards.gold_input = CreateFrame("EditBox", "MissionFrame_RewardFrame_GoldInput", NuttenhAdmin.main_frame.rewards, "InputBoxTemplate")
-NuttenhAdmin.main_frame.rewards.gold_input:SetPoint("BOTTOMLEFT", 29, 85)
+NuttenhAdmin.main_frame.rewards.gold_input:SetPoint("BOTTOMLEFT", 29, 70)
 NuttenhAdmin.main_frame.rewards.gold_input:SetHeight(25)
 NuttenhAdmin.main_frame.rewards.gold_input:SetWidth(120)
 NuttenhAdmin.main_frame.rewards.gold_input:SetAutoFocus(false)
@@ -596,10 +596,10 @@ end)
 
 -- Bouton pour les P.O.
 NuttenhAdmin.main_frame.rewards.gold_button = CreateFrame("Button", "MissionFrame_RewardFrame_GoldButton", NuttenhAdmin.main_frame.rewards, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.rewards.gold_button:SetPoint("BOTTOMRIGHT", -19, 85)
+NuttenhAdmin.main_frame.rewards.gold_button:SetPoint("BOTTOMRIGHT", -19, 70)
 NuttenhAdmin.main_frame.rewards.gold_button:SetHeight(25)
 NuttenhAdmin.main_frame.rewards.gold_button:SetWidth(70)
-NuttenhAdmin.main_frame.rewards.gold_button:SetText("OK")
+NuttenhAdmin.main_frame.rewards.gold_button:SetText("Définir")
 
 NuttenhAdmin.main_frame.rewards.gold_button:SetScript("OnClick", function(self)
 	if NuttenhAdmin.main_frame.rewards.gold_input:GetText() ~= "" and NuttenhAdmin.main_frame.rewards.gold_input:GetText() ~= "0" then
@@ -612,13 +612,38 @@ end)
 -- Titre pour les Items
 NuttenhAdmin.main_frame.rewards.item_title = NuttenhAdmin.main_frame.rewards:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.rewards.item_title:SetFont("Fonts\\FRIZQT__.ttf", 10)
-NuttenhAdmin.main_frame.rewards.item_title:SetPoint("BOTTOMLEFT", 29, 127)
+NuttenhAdmin.main_frame.rewards.item_title:SetPoint("BOTTOMLEFT", 29, 100 + 7)
 NuttenhAdmin.main_frame.rewards.item_title:SetText("Identifiant de l'item")
 NuttenhAdmin.main_frame.rewards.item_title:SetTextColor(1, 1, 1, 1)
 
+-- Titre pour les Items
+NuttenhAdmin.main_frame.rewards.amount_title = NuttenhAdmin.main_frame.rewards:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.rewards.amount_title:SetFont("Fonts\\FRIZQT__.ttf", 10)
+NuttenhAdmin.main_frame.rewards.amount_title:SetPoint("BOTTOMLEFT", 29, 125 + 7)
+NuttenhAdmin.main_frame.rewards.amount_title:SetText("Quantité")
+NuttenhAdmin.main_frame.rewards.amount_title:SetTextColor(1, 1, 1, 1)
+
+-- Input pour le nombre d'items à ajouter
+NuttenhAdmin.main_frame.rewards.amount_input = CreateFrame("EditBox", "MissionFrame_RewardFrame_AmountInput", NuttenhAdmin.main_frame.rewards, "InputBoxTemplate")
+NuttenhAdmin.main_frame.rewards.amount_input:SetPoint("BOTTOMLEFT", 29, 125)
+NuttenhAdmin.main_frame.rewards.amount_input:SetHeight(25)
+NuttenhAdmin.main_frame.rewards.amount_input:SetWidth(120)
+NuttenhAdmin.main_frame.rewards.amount_input:SetAutoFocus(false)
+
+NuttenhAdmin.main_frame.rewards.amount_input:SetScript("OnTextChanged", function(self)
+	if self:GetText() == "" then
+		NuttenhAdmin.main_frame.rewards.amount_title:Show()
+	else
+		NuttenhAdmin.main_frame.rewards.amount_title:Hide()
+	end
+
+	self:SetText(string.gsub(self:GetText(), "[^%d]", ""))
+end)
+
+
 -- Input pour les Items
 NuttenhAdmin.main_frame.rewards.item_input = CreateFrame("EditBox", "MissionFrame_RewardFrame_ItemInput", NuttenhAdmin.main_frame.rewards, "InputBoxTemplate")
-NuttenhAdmin.main_frame.rewards.item_input:SetPoint("BOTTOMLEFT", 29, 120)
+NuttenhAdmin.main_frame.rewards.item_input:SetPoint("BOTTOMLEFT", 29, 100)
 NuttenhAdmin.main_frame.rewards.item_input:SetHeight(25)
 NuttenhAdmin.main_frame.rewards.item_input:SetWidth(120)
 NuttenhAdmin.main_frame.rewards.item_input:SetAutoFocus(false)
@@ -635,33 +660,20 @@ end)
 
 -- Bouton pour les Items
 NuttenhAdmin.main_frame.rewards.item_button = CreateFrame("Button", "MissionFrame_RewardFrame_ItemButton", NuttenhAdmin.main_frame.rewards, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.rewards.item_button:SetPoint("BOTTOMRIGHT", -19, 120)
+NuttenhAdmin.main_frame.rewards.item_button:SetPoint("BOTTOMRIGHT", -19, 112)
 NuttenhAdmin.main_frame.rewards.item_button:SetHeight(25)
 NuttenhAdmin.main_frame.rewards.item_button:SetWidth(70)
-NuttenhAdmin.main_frame.rewards.item_button:SetText("OK")
+NuttenhAdmin.main_frame.rewards.item_button:SetText("Ajouter")
 
 NuttenhAdmin.main_frame.rewards.item_button:SetScript("OnClick", function(self)
 	local id = NuttenhAdmin.main_frame.rewards.item_input:GetText()
-	local amount = 1
+	local amount = NuttenhAdmin.main_frame.rewards.amount_input:GetText()
 
 	addItem(id, amount)
 end)
 
--- Bouton supprimer la dernière récompense
-NuttenhAdmin.main_frame.rewards.remove_button = CreateFrame("Button", "MissionFrame_RewardFrame_RemoveButton", NuttenhAdmin.main_frame.rewards, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.rewards.remove_button:SetPoint("BOTTOM", 0, 15)
-NuttenhAdmin.main_frame.rewards.remove_button:SetHeight(25)
-NuttenhAdmin.main_frame.rewards.remove_button:SetWidth(200)
-NuttenhAdmin.main_frame.rewards.remove_button:SetText("Supprimer le dernier item")
-
-NuttenhAdmin.main_frame.rewards.remove_button:SetScript("OnClick", function(self)
-	print("Remove last item")
-end)
-
-
 NuttenhAdmin.main_frame.items = {}
 NuttenhAdmin.main_frame.itemsFrames = {}
-
 
 function addItem(itemId, amount)
 	local nList = getArraySize(NuttenhAdmin.main_frame.items) + 1
