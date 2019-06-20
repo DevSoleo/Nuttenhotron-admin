@@ -37,7 +37,7 @@ function eventCommand(msg)
 						minutes = "0" .. tostring(minutes)
 					end
 
-					local s = split(command[2], " ")
+					local s = split(command[2], "_")
 					local c = ""
 
 					for i=1, getArraySize(s) do

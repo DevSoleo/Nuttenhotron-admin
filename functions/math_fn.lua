@@ -4,3 +4,6 @@ function round(num, decimal)
 	return math.floor(num * mult + 0.5) / mult
 end
 
+function mod(a, b)
+    return a - (math.floor(a/b)*b)
+end

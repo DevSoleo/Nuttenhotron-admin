@@ -64,6 +64,10 @@ NuttenhAdmin.main_frame.close_button:SetScript("OnClick", function(self, arg1)
 		-- On réduit la taille de la fenêtre et on masque les principales parties qui la compose
 		NuttenhAdmin.main_frame:SetHeight(55)
 
+		NuttenhAdmin.main_frame.missions:Hide()
+		NuttenhAdmin.main_frame.player_list:Hide()
+		NuttenhAdmin.main_frame.rewards:Hide()
+
 		fontString:SetText("+")
 		fontString:SetFont("Fonts\\FRIZQT__.TTF", 16)
 
@@ -71,6 +75,10 @@ NuttenhAdmin.main_frame.close_button:SetScript("OnClick", function(self, arg1)
 	else
 		-- On redonne à la fenêtre sa taille de base et on réaffiche les parties qui la compose
 		NuttenhAdmin.main_frame:SetHeight(500)
+
+		NuttenhAdmin.main_frame.missions:Show()
+		NuttenhAdmin.main_frame.player_list:Show()
+		NuttenhAdmin.main_frame.rewards:Show()
 
 		fontString:SetFont("Fonts\\FRIZQT__.TTF", 20)
 		fontString:SetText("-")
@@ -592,8 +600,9 @@ NuttenhAdmin.main_frame.rewards.gold_button:SetWidth(70)
 NuttenhAdmin.main_frame.rewards.gold_button:SetText("OK")
 
 NuttenhAdmin.main_frame.rewards.gold_button:SetScript("OnClick", function(self)
-	print("Add gold : " .. NuttenhAdmin.main_frame.rewards.gold_input:GetText())
-	NuttenhAdmin.main_frame.rewards.items.gold_value:SetText(GetCoinTextureString(NuttenhAdmin.main_frame.rewards.gold_input:GetText() * 10000))
+	if NuttenhAdmin.main_frame.rewards.gold_input:GetText() ~= "" and NuttenhAdmin.main_frame.rewards.gold_input:GetText() ~= "0" then
+		NuttenhAdmin.main_frame.rewards.items.gold_value:SetText(GetCoinTextureString(NuttenhAdmin.main_frame.rewards.gold_input:GetText() * 10000))
+	end
 end)
 
 NuttenhAdmin.main_frame.rewards.item_input = CreateFrame("EditBox", "MissionFrame_RewardFrame_ItemInput", NuttenhAdmin.main_frame.rewards, "InputBoxTemplate")
@@ -626,7 +635,8 @@ NuttenhAdmin.main_frame.rewards.item_button:SetWidth(70)
 NuttenhAdmin.main_frame.rewards.item_button:SetText("OK")
 
 NuttenhAdmin.main_frame.rewards.item_button:SetScript("OnClick", function(self)
-	print("Add gold : " .. NuttenhAdmin.main_frame.rewards.item_input:GetText())
+
+
 end)
 
 -- Bouton supprimer la dernière récompense
@@ -641,3 +651,195 @@ NuttenhAdmin.main_frame.rewards.remove_button:SetScript("OnClick", function(self
 end)
 
 
+
+NuttenhAdmin.main_frame.items = {}
+NuttenhAdmin.main_frame.itemsFrames = {}
+
+
+function addItem(itemId, amount)
+	local nList = getArraySize(NuttenhAdmin.main_frame.items)
+
+	NuttenhAdmin.main_frame.items[nList] = {id=itemId, amount=amount, n=nList}
+
+	displayItems()
+end
+
+function removeItem(index)
+	table.remove(NuttenhAdmin.main_frame.items, index)
+end
+
+function undisplayItems()
+	for i=0, getArraySize(NuttenhAdmin.main_frame.itemsFrames) - 1 do
+		NuttenhAdmin.main_frame.itemsFrames[i]:Hide()
+	end
+
+	NuttenhAdmin.main_frame.itemsFrames = {}
+end
+
+function displayItems()
+	undisplayItems()
+	for i=0, getArraySize(NuttenhAdmin.main_frame.items) - 1 do
+		print(i)
+		local itemId = NuttenhAdmin.main_frame.items[i]["id"]
+		local amount = NuttenhAdmin.main_frame.items[i]["amount"]
+
+		local nList = i
+
+		local x = 23 + (60 * mod(nList, 3))
+		local y = -20
+
+		if nList + 1 == 3 or nList + 1 == 6 then
+			x = 23 + (60 * 2)
+		end
+
+		if nList > 2 then
+			y = -90
+		end
+
+		NuttenhAdmin.main_frame.itemsFrames[i] = CreateFrame("Button", nil, NuttenhAdmin.main_frame.rewards.items)
+		NuttenhAdmin.main_frame.itemsFrames[i]:SetFrameStrata("BACKGROUND")
+		NuttenhAdmin.main_frame.itemsFrames[i]:SetBackdropBorderColor(255, 0, 0, 1)
+		NuttenhAdmin.main_frame.itemsFrames[i]:SetPoint("TOPLEFT", x, y)
+		NuttenhAdmin.main_frame.itemsFrames[i]:SetWidth(35) -- Set these to whatever height/width is needed 
+		NuttenhAdmin.main_frame.itemsFrames[i]:SetHeight(35) -- for your Texture
+
+		local t = NuttenhAdmin.main_frame.itemsFrames[i]:CreateTexture(nil,"BACKGROUND")
+		t:SetTexture(GetItemIcon(itemId))
+		t:SetAllPoints(NuttenhAdmin.main_frame.itemsFrames[i])
+		NuttenhAdmin.main_frame.itemsFrames[i].texture = t
+
+		GetItemInfo(itemId)
+
+		NuttenhAdmin.main_frame.itemsFrames[i]:SetScript("OnClick", function(self)
+			removeItem(i)
+			displayItems()
+		end)
+
+		NuttenhAdmin.main_frame.itemsFrames[i]:SetScript("OnEnter", function(self)
+			local name, link = GetItemInfo(itemId)
+		  	GameTooltip:SetOwner(NuttenhAdmin.main_frame.itemsFrames[i], "ANCHOR_CURSOR")
+		  	GameTooltip:SetHyperlink(link)
+		  	GameTooltip:Show()
+		end)
+
+		NuttenhAdmin.main_frame.itemsFrames[i]:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+		end)
+
+		NuttenhAdmin.main_frame.itemsFrames[i].text = NuttenhAdmin.main_frame.itemsFrames[i]:CreateFontString(nil, "OVERLAY")
+		NuttenhAdmin.main_frame.itemsFrames[i].text:SetPoint("BOTTOMRIGHT", NuttenhAdmin.main_frame.itemsFrames[i], 0, 0)
+		NuttenhAdmin.main_frame.itemsFrames[i].text:SetFont("Fonts\\FRIZQT__.TTF", 14, "OUTLINE")
+		NuttenhAdmin.main_frame.itemsFrames[i].text:SetTextColor(255, 255, 255)
+		NuttenhAdmin.main_frame.itemsFrames[i].text:SetText(amount)
+	end
+end
+
+addItem(2070, 10)
+-- x = +60 | y = +0
+addItem(2070, 10)
+-- x = +60 | y = +0
+addItem(2070, 10)
+
+addItem(2070, 7)
+
+addItem(2070, 10)
+
+addItem(2070, 10)
+
+
+
+displayItems()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NuttenhAdmin.main_frame.generate_button = CreateFrame("Button", "MainFrame_GenerateButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
+NuttenhAdmin.main_frame.generate_button:SetPoint("BOTTOMLEFT", 62, 20)
+NuttenhAdmin.main_frame.generate_button:SetHeight(25)
+NuttenhAdmin.main_frame.generate_button:SetWidth(200)
+NuttenhAdmin.main_frame.generate_button:SetText("Générer la clé !")
+
+NuttenhAdmin.main_frame.generate_button:SetScript("OnClick", function(self)
+	if getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1 > 0 then
+		print("ok")
+		local key = {}
+		local k = ""
+
+		for i=1, getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1 do
+			key[getArraySize(key)] = NuttenhAdmin.main_frame.missions.list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.missions.list.content[i]["setting"] .. "_"
+		end
+
+		for i=0, getArraySize(key) - 1 do
+			k = k .. tostring(key[i])
+		end
+
+		print("|cFFF547FF[Addon] [" .. addonName .. "] : Clé générée est " .. k)
+	else
+		print("|cFFF547FF[Addon] [" .. addonName .. "] : Aucune mission n'a été ajoutée !")
+	end
+end)
+
+
+NuttenhAdmin.main_frame.start_button = CreateFrame("Button", "MainFrame_StartButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
+NuttenhAdmin.main_frame.start_button:SetPoint("BOTTOMRIGHT", -62, 20)
+NuttenhAdmin.main_frame.start_button:SetHeight(25)
+NuttenhAdmin.main_frame.start_button:SetWidth(200)
+NuttenhAdmin.main_frame.start_button:SetText("Démarrer l'event !")
+
+NuttenhAdmin.main_frame.start_button:SetScript("OnClick", function(self)
+	if getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1 > 0 then
+		local key = {}
+		local k = ""
+
+		for i=1, getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1 do
+			key[getArraySize(key)] = NuttenhAdmin.main_frame.missions.list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.missions.list.content[i]["setting"] .. "_"
+		end
+
+		for i=0, getArraySize(key) - 1 do
+			k = k .. tostring(key[i])
+		end
+
+		k = k:sub(1, -2)
+
+		eventCommand("start " .. k .. " " .. UnitName("player"))
+		PlaySound("READYCHECK", "SFX")
+
+		NuttenhAdmin.main_frame.start_button:Hide()
+		NuttenhAdmin.main_frame.stop_button:Show()
+	else
+		print("|cFFF547FF[Addon] [" .. addonName .. "] : Aucune mission n'a été ajoutée !")
+	end
+end)
+
+NuttenhAdmin.main_frame.stop_button = CreateFrame("Button", "MainFrame_StopButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
+NuttenhAdmin.main_frame.stop_button:SetPoint("BOTTOMRIGHT", -62, 20)
+NuttenhAdmin.main_frame.stop_button:SetHeight(25)
+NuttenhAdmin.main_frame.stop_button:SetWidth(200)
+NuttenhAdmin.main_frame.stop_button:SetText("Démarrer l'event !")
+
+NuttenhAdmin.main_frame.stop_button:SetScript("OnClick", function(self)
+	eventCommand("stop")
+
+	NuttenhAdmin.main_frame.start_button:Show()
+	NuttenhAdmin.main_frame.stop_button:Hide()
+end)
+
+NuttenhAdmin.main_frame.stop_button:Hide()
