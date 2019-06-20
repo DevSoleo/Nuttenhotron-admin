@@ -762,7 +762,7 @@ NuttenhAdmin.main_frame.generate_button:SetScript("OnClick", function(self)
 
 		k = k:sub(1, -2)
 	
-		StaticPopupDialogs["ENTER_KEY"] = {
+		StaticPopupDialogs["GENERATED_KEY"] = {
 		  	text = "Clé générée : ",
 		  	button2 = "Fermer",
 
@@ -776,7 +776,7 @@ NuttenhAdmin.main_frame.generate_button:SetScript("OnClick", function(self)
 		  	end
 		}
 
-	StaticPopup_Show("ENTER_KEY")
+		StaticPopup_Show("GENERATED_KEY")
 	else
 		print("|cFFF547FF[Addon] [" .. addonName .. "] : Aucune mission n'a été ajoutée !")
 	end
