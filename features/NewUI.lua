@@ -635,8 +635,7 @@ NuttenhAdmin.main_frame.rewards.item_button:SetWidth(70)
 NuttenhAdmin.main_frame.rewards.item_button:SetText("OK")
 
 NuttenhAdmin.main_frame.rewards.item_button:SetScript("OnClick", function(self)
-
-
+	addItem(NuttenhAdmin.main_frame.rewards.item_input:GetText(), 1)
 end)
 
 -- Bouton supprimer la dernière récompense
@@ -734,43 +733,6 @@ function displayItems()
 		NuttenhAdmin.main_frame.itemsFrames[i].text:SetText(amount)
 	end
 end
-
-addItem(2070, 10)
--- x = +60 | y = +0
-addItem(2070, 10)
--- x = +60 | y = +0
-addItem(2070, 10)
-
-addItem(2070, 7)
-
-addItem(2070, 10)
-
-addItem(2070, 10)
-
-
-
-displayItems()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 NuttenhAdmin.main_frame.generate_button = CreateFrame("Button", "MainFrame_GenerateButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
 NuttenhAdmin.main_frame.generate_button:SetPoint("BOTTOMLEFT", 62, 20)
