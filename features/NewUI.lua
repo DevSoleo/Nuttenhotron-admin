@@ -657,7 +657,7 @@ NuttenhAdmin.main_frame.itemsFrames = {}
 
 
 function addItem(itemId, amount)
-	local nList = getArraySize(NuttenhAdmin.main_frame.items)
+	local nList = getArraySize(NuttenhAdmin.main_frame.items) + 1
 
 	NuttenhAdmin.main_frame.items[nList] = {id=itemId, amount=amount, n=nList}
 
@@ -666,10 +666,11 @@ end
 
 function removeItem(index)
 	table.remove(NuttenhAdmin.main_frame.items, index)
+	NuttenhAdmin.main_frame.itemsFrames[index]:Hide()
 end
 
 function undisplayItems()
-	for i=0, getArraySize(NuttenhAdmin.main_frame.itemsFrames) - 1 do
+	for i=1, getArraySize(NuttenhAdmin.main_frame.itemsFrames) do
 		NuttenhAdmin.main_frame.itemsFrames[i]:Hide()
 	end
 
@@ -678,21 +679,20 @@ end
 
 function displayItems()
 	undisplayItems()
-	for i=0, getArraySize(NuttenhAdmin.main_frame.items) - 1 do
-		print(i)
+	for i=1, getArraySize(NuttenhAdmin.main_frame.items) do
 		local itemId = NuttenhAdmin.main_frame.items[i]["id"]
 		local amount = NuttenhAdmin.main_frame.items[i]["amount"]
 
 		local nList = i
 
-		local x = 23 + (60 * mod(nList, 3))
+		local x = 23 + (60 * mod(nList - 1, 3))
 		local y = -20
 
-		if nList + 1 == 3 or nList + 1 == 6 then
+		if nList == 3 or nList == 6 then
 			x = 23 + (60 * 2)
 		end
 
-		if nList > 2 then
+		if nList > 3 then
 			y = -90
 		end
 
@@ -711,6 +711,7 @@ function displayItems()
 		GetItemInfo(itemId)
 
 		NuttenhAdmin.main_frame.itemsFrames[i]:SetScript("OnClick", function(self)
+			print("ok")
 			removeItem(i)
 			displayItems()
 		end)
