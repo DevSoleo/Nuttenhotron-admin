@@ -332,7 +332,7 @@ pSelectZone:Hide()
 
 ----------------------------------------------------------------------------------------------------------
 
-local missions_types = {"Type de mission", "Parler à un PNJ", "Trouver un lieu", "Ramasser un item", "Tuer des mobs", "Répondre à une question"}
+local missions_types = {"Type de mission", "Cibler", "Trouver", "Posséder", "Tuer", "Répondre"}
 
 -- Création du menu déroulant
 local pSelectMissionType = CreateFrame("Frame", "DropdownMissionType", NuttenhAdmin.main_frame.missions, "UIDropDownMenuTemplate")
@@ -361,7 +361,7 @@ end)
 local dropdownSelectItemValues = {"Item"}
 
 for o=1, getArraySize(ITEMS_LIST) do
-	dropdownSelectItemValues[o + 1] = ITEMS_LIST[tostring(o)]["name"][GetLocale()]
+	dropdownSelectItemValues[o + 1] = "x" .. ITEMS_LIST[tostring(o)]["amount"] .. " " .. ITEMS_LIST[tostring(o)]["name"][GetLocale()]
 end
 
 local dropdownSelectItemValue = 0
@@ -567,7 +567,7 @@ NuttenhAdmin.main_frame.rewards.items:SetBackdrop({
 NuttenhAdmin.main_frame.rewards.items.gold_value = NuttenhAdmin.main_frame.rewards.items:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.rewards.items.gold_value:SetFont("Fonts\\FRIZQT__.ttf", 12)
 NuttenhAdmin.main_frame.rewards.items.gold_value:SetPoint("BOTTOM", 0, 20)
-NuttenhAdmin.main_frame.rewards.items.gold_value:SetText("PAS DSOUS !")
+NuttenhAdmin.main_frame.rewards.items.gold_value:SetText(GetCoinTextureString(0))
 NuttenhAdmin.main_frame.rewards.items.gold_value:SetTextColor(1, 1, 1, 1)
 
 -- Titre pour les P.O.
@@ -645,7 +645,6 @@ NuttenhAdmin.main_frame.rewards.item_button:SetScript("OnClick", function(self)
 	local amount = 1
 
 	addItem(id, amount)
-	rewardCommand("add " .. id .. " " .. amount)
 end)
 
 -- Bouton supprimer la dernière récompense
@@ -719,7 +718,6 @@ function displayItems()
 		GetItemInfo(itemId)
 
 		NuttenhAdmin.main_frame.itemsFrames[i]:SetScript("OnClick", function(self)
-			print("ok")
 			removeItem(i)
 			displayItems()
 		end)
@@ -744,14 +742,13 @@ function displayItems()
 end
 
 NuttenhAdmin.main_frame.generate_button = CreateFrame("Button", "MainFrame_GenerateButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.generate_button:SetPoint("BOTTOMLEFT", 62, 20)
+NuttenhAdmin.main_frame.generate_button:SetPoint("BOTTOMLEFT", 20, 15)
 NuttenhAdmin.main_frame.generate_button:SetHeight(25)
-NuttenhAdmin.main_frame.generate_button:SetWidth(200)
-NuttenhAdmin.main_frame.generate_button:SetText("Générer la clé !")
+NuttenhAdmin.main_frame.generate_button:SetWidth(140)
+NuttenhAdmin.main_frame.generate_button:SetText("Générer la clé")
 
 NuttenhAdmin.main_frame.generate_button:SetScript("OnClick", function(self)
 	if getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1 > 0 then
-		print("ok")
 		local key = {}
 		local k = ""
 
@@ -763,15 +760,74 @@ NuttenhAdmin.main_frame.generate_button:SetScript("OnClick", function(self)
 			k = k .. tostring(key[i])
 		end
 
-		print("|cFFF547FF[Addon] [" .. addonName .. "] : Clé générée est " .. k)
+		k = k:sub(1, -2)
+	
+		StaticPopupDialogs["ENTER_KEY"] = {
+		  	text = "Clé générée : ",
+		  	button2 = "Fermer",
+
+		  	timeout = 0,
+		  	whileDead = true,
+		  	hideOnEscape = true,
+		  	hasEditBox = true,
+
+		  	OnShow = function(self)
+		  		self.editBox:SetText(k)
+		  	end
+		}
+
+	StaticPopup_Show("ENTER_KEY")
 	else
 		print("|cFFF547FF[Addon] [" .. addonName .. "] : Aucune mission n'a été ajoutée !")
 	end
 end)
 
+NuttenhAdmin.main_frame.specific_button = CreateFrame("Button", "MainFrame_SpecificButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
+NuttenhAdmin.main_frame.specific_button:SetPoint("BOTTOMLEFT", 170, 15)
+NuttenhAdmin.main_frame.specific_button:SetHeight(25)
+NuttenhAdmin.main_frame.specific_button:SetWidth(140)
+NuttenhAdmin.main_frame.specific_button:SetText("Entrer une clé")
+
+NuttenhAdmin.main_frame.specific_button:SetScript("OnClick", function(self)
+	StaticPopupDialogs["ENTER_KEY"] = {
+	  	text = "Enter une clé :",
+	  	button1 = "Valider",
+	  	button2 = "Fermer",
+
+	  	timeout = 0,
+	  	whileDead = true,
+	  	hideOnEscape = true,
+	  	hasEditBox = true,
+
+	  	OnAccept = function(self)
+	  		for i=1, getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1 do
+				NuttenhAdmin.main_frame.missions.list.content[i]:Hide()
+				NuttenhAdmin.main_frame.missions.list.content[i] = nil
+			end
+
+			local splitedKey = split(self.editBox:GetText(), "_")
+
+			for i=1, getArraySize(splitedKey) do
+				local mission = splitedKey[i]
+				local mission_type = string.sub(mission, 1, 1)
+				local setting = string.sub(mission, 2)
+
+				addLineAdmin(getIndication(mission_type, setting), mission_type, setting)
+			end
+
+	  	end,
+
+  		OnCancel = function(self)
+	  		-- StaticPopup_Show("QUESTION")
+		end
+	}
+
+	StaticPopup_Show("ENTER_KEY")
+end)
+
 
 NuttenhAdmin.main_frame.start_button = CreateFrame("Button", "MainFrame_StartButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.start_button:SetPoint("BOTTOMRIGHT", -62, 20)
+NuttenhAdmin.main_frame.start_button:SetPoint("BOTTOM", 0, 15)
 NuttenhAdmin.main_frame.start_button:SetHeight(25)
 NuttenhAdmin.main_frame.start_button:SetWidth(200)
 NuttenhAdmin.main_frame.start_button:SetText("Démarrer l'event !")
@@ -785,7 +841,9 @@ NuttenhAdmin.main_frame.start_button:SetScript("OnClick", function(self)
 		end
 
 		-- Ajout des récompense saisies (gold)
-		rewardCommand("add gold " .. tostring(NuttenhAdmin.main_frame.gold))
+		if NuttenhAdmin.main_frame.gold > 0 then
+			rewardCommand("add gold " .. tostring(NuttenhAdmin.main_frame.gold))
+		end
 
 		local key = {}
 		local k = ""
@@ -802,25 +860,17 @@ NuttenhAdmin.main_frame.start_button:SetScript("OnClick", function(self)
 
 		eventCommand("start " .. k .. " " .. UnitName("player"))
 		PlaySound("READYCHECK", "SFX")
-
-		NuttenhAdmin.main_frame.start_button:Hide()
-		NuttenhAdmin.main_frame.stop_button:Show()
 	else
 		print("|cFFF547FF[Addon] [" .. addonName .. "] : Aucune mission n'a été ajoutée !")
 	end
 end)
 
 NuttenhAdmin.main_frame.stop_button = CreateFrame("Button", "MainFrame_StopButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.stop_button:SetPoint("BOTTOMRIGHT", -62, 20)
+NuttenhAdmin.main_frame.stop_button:SetPoint("BOTTOMRIGHT", -62, 15)
 NuttenhAdmin.main_frame.stop_button:SetHeight(25)
 NuttenhAdmin.main_frame.stop_button:SetWidth(200)
-NuttenhAdmin.main_frame.stop_button:SetText("Démarrer l'event !")
+NuttenhAdmin.main_frame.stop_button:SetText("Arrêter l'event !")
 
 NuttenhAdmin.main_frame.stop_button:SetScript("OnClick", function(self)
 	eventCommand("stop")
-
-	NuttenhAdmin.main_frame.start_button:Show()
-	NuttenhAdmin.main_frame.stop_button:Hide()
 end)
-
-NuttenhAdmin.main_frame.stop_button:Hide()

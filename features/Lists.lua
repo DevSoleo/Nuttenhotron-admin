@@ -36,3 +36,27 @@ function loadLists()
 end
 
 loadLists()
+
+function getIndication(mission_type, setting)
+	if mission_type == "1" then
+		return "Cibler : " .. NPC_LIST[setting]["name"][GetLocale()]
+	elseif mission_type == "2" then
+		return "Trouver : " .. LOCATIONS_LIST[setting]["zoneText"][GetLocale()]
+	elseif mission_type == "3" then
+		return "Posséder : x" .. ITEMS_LIST[setting]["amount"] .. " " .. ITEMS_LIST[setting]["name"][GetLocale()]
+	elseif mission_type == "4" then
+		return "Tuer : x" .. KILL_LIST[setting]["amount"] .. " " .. KILL_LIST[setting]["name"][GetLocale()]
+	end
+end
+
+function getSubIndication(mission_type, setting)
+	if mission_type == "1" then
+		return NPC_LIST[setting]["indication"]
+	elseif mission_type == "2" then
+		return LOCATIONS_LIST[setting]["indication"]
+	elseif mission_type == "3" then
+		return ITEMS_LIST[setting]["indication"]
+	elseif mission_type == "4" then 
+		return "Compteur : 0/" .. KILL_LIST[setting]["amount"]
+	end
+end
