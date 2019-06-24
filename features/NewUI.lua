@@ -177,11 +177,16 @@ scrollframe:SetScrollChild(NuttenhAdmin.main_frame.player_list.content)
 
 function addPlayerLine(playerName)
 	local lineNumber = getArraySize(NuttenhAdmin.main_frame.player_list.content)
+
+	local _, className = UnitClass(playerName)
+
+	local rgb = getClassColor(className)["rgb"]
+
 	NuttenhAdmin.main_frame.player_list.content[lineNumber] = NuttenhAdmin.main_frame.player_list.content:CreateFontString(nil, "ARTWORK")
 	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetFont("Fonts\\ARIALN.ttf", 12)
 	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetPoint("TOPLEFT", 0, 10 - (lineNumber * 20))
-	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetText(lineNumber .. ". " .. playerName)
-	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetTextColor(1, 1, 1, 1)
+	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetText(lineNumber .. ". " .. playerName .. " - " .. UnitLevel(playerName))
+	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetTextColor(rgb["r"] / 255, rgb["g"] / 255, rgb["b"] / 255, 1)
 end
 
 -- Mission Frame
@@ -623,6 +628,12 @@ NuttenhAdmin.main_frame.rewards:SetBackdrop({
 	}
 })
 
+NuttenhAdmin.main_frame.rewards.title = NuttenhAdmin.main_frame.rewards:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.rewards.title:SetFont("Fonts\\FRIZQT__.ttf", 12)
+NuttenhAdmin.main_frame.rewards.title:SetPoint("TOP", 0, -6)
+NuttenhAdmin.main_frame.rewards.title:SetText("Le vainqueur recevra :")
+NuttenhAdmin.main_frame.rewards.title:SetTextColor(1, 1, 1, 1)
+
 -- Items List
 NuttenhAdmin.main_frame.rewards.items = CreateFrame("Frame", "MainFrame_RewardsFrame_ItemsList", NuttenhAdmin.main_frame.rewards)
 NuttenhAdmin.main_frame.rewards.items:SetWidth(200)
@@ -644,7 +655,7 @@ NuttenhAdmin.main_frame.rewards.items:SetBackdrop({
 NuttenhAdmin.main_frame.rewards.items.description = NuttenhAdmin.main_frame.rewards.items:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.rewards.items.description:SetFont("Fonts\\FRIZQT__.ttf", 10)
 NuttenhAdmin.main_frame.rewards.items.description:SetPoint("BOTTOM", 0, -15)
-NuttenhAdmin.main_frame.rewards.items.description:SetText("*Cliquez sur un item pour le retirer.")
+NuttenhAdmin.main_frame.rewards.items.description:SetText("*Cliquez sur un item pour le retirer")
 NuttenhAdmin.main_frame.rewards.items.description:SetTextColor(1, 1, 1, 1)
 
 -- Affichage du nombre de P.O. à offrir au gagnant
@@ -949,7 +960,7 @@ NuttenhAdmin.main_frame.start_button:SetScript("OnClick", function(self)
 		end
 
 		-- Ajout des récompense saisies (gold)
-		if NuttenhAdmin.main_frame.gold > 0 then
+		if tonumber(NuttenhAdmin.main_frame.gold) > 0 then
 			rewardCommand("add gold " .. tostring(NuttenhAdmin.main_frame.gold))
 		end
 
