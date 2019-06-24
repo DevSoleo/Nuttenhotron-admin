@@ -641,6 +641,12 @@ NuttenhAdmin.main_frame.rewards.items:SetBackdrop({
 	}
 })
 
+NuttenhAdmin.main_frame.rewards.items.description = NuttenhAdmin.main_frame.rewards.items:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.rewards.items.description:SetFont("Fonts\\FRIZQT__.ttf", 10)
+NuttenhAdmin.main_frame.rewards.items.description:SetPoint("BOTTOM", 0, -15)
+NuttenhAdmin.main_frame.rewards.items.description:SetText("*Cliquez sur un item pour le retirer.")
+NuttenhAdmin.main_frame.rewards.items.description:SetTextColor(1, 1, 1, 1)
+
 -- Affichage du nombre de P.O. à offrir au gagnant
 NuttenhAdmin.main_frame.rewards.items.gold_value = NuttenhAdmin.main_frame.rewards.items:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.rewards.items.gold_value:SetFont("Fonts\\FRIZQT__.ttf", 12)
@@ -744,14 +750,18 @@ NuttenhAdmin.main_frame.rewards.item_button:SetWidth(70)
 NuttenhAdmin.main_frame.rewards.item_button:SetText("Ajouter")
 
 NuttenhAdmin.main_frame.rewards.item_button:SetScript("OnClick", function(self)
-	local id = NuttenhAdmin.main_frame.rewards.item_input:GetText()
-	local amount = NuttenhAdmin.main_frame.rewards.amount_input:GetText()
+	wait(0.1, function()
+		local id = NuttenhAdmin.main_frame.rewards.item_input:GetText()
+		local amount = NuttenhAdmin.main_frame.rewards.amount_input:GetText()
 
-	if amount == nil or amount == 0 or amount == "" then
-		amount = 1
-	end
+		if amount == nil or amount == 0 or amount == "" then
+			amount = 1
+		end
 
-	addItem(id, amount)
+		if GetItemInfo(id) ~= nil then
+			addItem(id, amount)
+		end
+	end)
 end)
 
 NuttenhAdmin.main_frame.items = {}
@@ -760,9 +770,13 @@ NuttenhAdmin.main_frame.itemsFrames = {}
 function addItem(itemId, amount)
 	local nList = getArraySize(NuttenhAdmin.main_frame.items) + 1
 
-	NuttenhAdmin.main_frame.items[nList] = {id=itemId, amount=amount, n=nList}
+	if nList <= 6 then
+		NuttenhAdmin.main_frame.items[nList] = {id=itemId, amount=amount, n=nList}
 
-	displayItems()
+		displayItems()
+	else
+		message("Vous ne pouvez pas ajouter plus d'objets en récompense !")
+	end
 end
 
 function removeItem(index)
