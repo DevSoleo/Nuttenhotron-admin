@@ -243,7 +243,7 @@ NuttenhAdmin.main_frame.missions.list.scrollframe = scrollframe
 local scrollbar = CreateFrame("Slider", nil, scrollframe, "UIPanelScrollBarTemplate") 
 scrollbar:SetPoint("TOPLEFT", NuttenhAdmin.main_frame.missions.list, "TOPRIGHT", -20, -18) 
 scrollbar:SetPoint("BOTTOMLEFT", NuttenhAdmin.main_frame.missions.list, "BOTTOMRIGHT", -20, 18) 
-scrollbar:SetMinMaxValues(1, 20) 
+scrollbar:SetMinMaxValues(1, 1) 
 scrollbar.scrollStep = 1
 scrollbar:SetValueStep(scrollbar.scrollStep) 
 scrollbar:SetValue(0) 
@@ -252,11 +252,13 @@ scrollbar:SetScript("OnValueChanged", function (self, value)
 	self:GetParent():SetVerticalScroll(value) 
 end)
 scrollbar.maxValue = 0
+scrollbar:Hide()
 
 local scrollbg = scrollbar:CreateTexture(nil, "BACKGROUND") 
 scrollbg:SetAllPoints(scrollbar) 
 scrollbg:SetTexture(0, 0, 0, 0) 
 NuttenhAdmin.main_frame.missions.list.scrollbar = scrollbar 
+
 
 --content frame 
 NuttenhAdmin.main_frame.missions.list.content = CreateFrame("Frame", nil, scrollframe) 
@@ -268,11 +270,17 @@ function addLineAdmin(text, mission_type, setting)
 	local lineNumber = getArraySize(NuttenhAdmin.main_frame.missions.list.content)
 	NuttenhAdmin.main_frame.missions.list.content[lineNumber] = NuttenhAdmin.main_frame.missions.list.content:CreateFontString(nil, "ARTWORK")
 	NuttenhAdmin.main_frame.missions.list.content[lineNumber]:SetFont("Fonts\\ARIALN.ttf", 12)
-	NuttenhAdmin.main_frame.missions.list.content[lineNumber]:SetPoint("TOPLEFT", 0, 10 - (lineNumber * 20))
+	NuttenhAdmin.main_frame.missions.list.content[lineNumber]:SetPoint("TOPLEFT", 0, 15 - (lineNumber * 20))
 	NuttenhAdmin.main_frame.missions.list.content[lineNumber]:SetText(lineNumber .. ". " .. tostring(text))
 	NuttenhAdmin.main_frame.missions.list.content[lineNumber]:SetTextColor(1, 1, 1, 1)
 	NuttenhAdmin.main_frame.missions.list.content[lineNumber]["mission_type"] = mission_type
 	NuttenhAdmin.main_frame.missions.list.content[lineNumber]["setting"] = setting
+
+	if lineNumber > 9 then
+		NuttenhAdmin.main_frame.missions.list.scrollbar:SetMinMaxValues(1, (lineNumber - 9) * 20)
+		NuttenhAdmin.main_frame.missions.list.scrollbar:Show()
+		NuttenhAdmin.main_frame.missions.list.scrollbar:SetValue((lineNumber - 9) * 20)
+	end
 end
 
 function removeLastLine()
