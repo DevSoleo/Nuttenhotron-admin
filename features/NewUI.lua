@@ -180,13 +180,13 @@ function addPlayerLine(playerName)
 
 	local _, className = UnitClass(playerName)
 
-	local rgb = getClassColor(className)["rgb"]
+	-- local rgb = getClassColor(className)["rgb"]
 
 	NuttenhAdmin.main_frame.player_list.content[lineNumber] = NuttenhAdmin.main_frame.player_list.content:CreateFontString(nil, "ARTWORK")
 	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetFont("Fonts\\ARIALN.ttf", 12)
 	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetPoint("TOPLEFT", 0, 10 - (lineNumber * 20))
-	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetText(lineNumber .. ". " .. playerName .. " - " .. UnitLevel(playerName))
-	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetTextColor(rgb["r"] / 255, rgb["g"] / 255, rgb["b"] / 255, 1)
+	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetText(lineNumber .. ". " .. playerName)
+	-- NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetTextColor(rgb["r"] / 255, rgb["g"] / 255, rgb["b"] / 255, 1)
 end
 
 -- Mission Frame
