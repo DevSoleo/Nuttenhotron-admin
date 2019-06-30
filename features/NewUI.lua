@@ -376,7 +376,7 @@ pSelectZone:Hide()
 
 ----------------------------------------------------------------------------------------------------------
 
-local missions_types = {"Type de mission", "Cibler", "Trouver", "Posséder", "Tuer", "Répondre"}
+local missions_types = {"Type de mission", "Cibler", "Trouver", "Posséder", "Tuer", "Répondre", "Mini-Jeux"}
 
 -- Création du menu déroulant
 local pSelectMissionType = CreateFrame("Frame", "DropdownMissionType", NuttenhAdmin.main_frame.missions, "UIDropDownMenuTemplate")
@@ -524,6 +524,46 @@ pSelectQuestion:Hide()
 
 ----------------------------------------------------------------------------------------------------------
 
+local dropdownSelectGameValues = {"Mini-jeux"}
+
+for o=1, getArraySize(GAMES_LIST) do
+	dropdownSelectGameValues[o + 1] = GAMES_LIST[tostring(o)]["name"][GetLocale()]
+end
+
+local dropdownSelectGameValue = 0
+local pSelectGame = nil
+pSelectGame = CreateFrame("Frame", "DropdownSelectGame", NuttenhAdmin.main_frame.missions, "UIDropDownMenuTemplate")
+pSelectGame.line = i
+pSelectGame:SetPoint("TOP", 0, -60)
+UIDropDownMenu_SetWidth(pSelectGame, 150)
+UIDropDownMenu_SetText(pSelectGame, "Mini-jeux")
+
+UIDropDownMenu_Initialize(pSelectGame, function(self, level, menuList)
+	for i=1, getArraySize(dropdownSelectGameValues) do
+		local info = UIDropDownMenu_CreateInfo()
+		info.text, info.arg1, info.func = dropdownSelectGameValues[i], i, self.SetValue
+
+		if dropdownSelectGameValue == i then
+			info.checked = true
+		end
+
+		UIDropDownMenu_AddButton(info)
+	end
+end)
+
+function pSelectGame:SetValue(value)
+	UIDropDownMenu_SetText(pSelectGame, dropdownSelectGameValues[value])
+	dropdownSelectGameValue = value
+	local v = value - 1
+	pSelectGame.value = v
+
+	CloseDropDownMenus()
+end
+
+pSelectGame:Hide()
+
+----------------------------------------------------------------------------------------------------------
+
 -- Cette fonction est éxécutée lorsque l'utilisateur choisit une option dans le premier menu
 function pSelectMissionType:SetValue(value)
 	UIDropDownMenu_SetText(pSelectMissionType, missions_types[value])
@@ -534,6 +574,7 @@ function pSelectMissionType:SetValue(value)
 	pSelectItem:Hide()
 	pSelectMob:Hide()
 	pSelectQuestion:Hide()
+	pSelectGame:Hide()
 
 	if pSelectMissionType.value == 1 then
 		pSelectNpc:Show()
@@ -545,8 +586,9 @@ function pSelectMissionType:SetValue(value)
 		pSelectMob:Show()
 	elseif pSelectMissionType.value == 5 then
 		pSelectQuestion:Show()
+	elseif pSelectMissionType.value == 6 then
+		pSelectGame:Show()
 	end
-
 	CloseDropDownMenus()
 end
 
@@ -596,6 +638,13 @@ NuttenhAdmin.main_frame.missions.add_button:SetScript("OnClick", function(self)
 			
 			if pSelectQuestion.value ~= nil and pSelectQuestion.value ~= 0 then
 				addLineAdmin(missions_types[pSelectMissionType.value + 1] .. " : " .. dropdownSelectQuestionValues[pSelectQuestion.value + 1], pSelectMissionType.value, pSelectQuestion.value)
+			else
+				print("|cFFF547FF[Addon] [" .. addonName .. "] : Aucune valeur n'a été saisie !")
+			end
+		elseif pSelectMissionType.value == 6 then
+			
+			if pSelectGame.value ~= nil and pSelectGame.value ~= 0 then
+				addLineAdmin(missions_types[pSelectMissionType.value + 1] .. " : " .. dropdownSelectGameValues[pSelectGame.value + 1], pSelectMissionType.value, pSelectGame.value)
 			else
 				print("|cFFF547FF[Addon] [" .. addonName .. "] : Aucune valeur n'a été saisie !")
 			end

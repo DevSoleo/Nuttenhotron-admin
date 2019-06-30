@@ -3,6 +3,7 @@ ANSWER_LIST = {}
 LOCATIONS_LIST = {}
 ITEMS_LIST = {}
 KILL_LIST = {}
+GAMES_LIST = {}
 
 function loadLists()
 	NPC_LIST["1"] = {name={frFR="Miwana"}, indication="Elle se trouve quelque part à Orgrimmar"}
@@ -33,6 +34,8 @@ function loadLists()
 
 	KILL_LIST["1"] = {name={frFR="Pourceau adulte sauvage", enUS=""}, amount=5, indication="Devant Orgrimmar !"}
 	KILL_LIST["2"] = {name={frFR="Ecrevisse boueuse", enUS="Muddy Crawfish", esES="Centollo fangoso"}, amount=5, indication="Petites ecrevisses !"}
+
+	GAMES_LIST["1"] = {name={frFR="Mémo"}}
 end
 
 loadLists()
