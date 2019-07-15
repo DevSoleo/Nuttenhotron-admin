@@ -24,3 +24,4 @@ chatGuildEvent:SetScript("OnEvent", function(self, event, message, sender, ...)
 		vASmoothClear()
 	end
 end)
+

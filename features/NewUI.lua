@@ -37,87 +37,6 @@ NuttenhAdmin.main_frame.title:SetText("Nuttenh Admin Panel - " .. UnitName("play
 NuttenhAdmin.main_frame.title:SetTextColor(1, 1, 1, 1)
 
 ----------------------------------------------------------------------------------------------------------
-
--- Création d'un bouton permettant de réduire la fenêtre
-NuttenhAdmin.main_frame.close_button = CreateFrame("Button", "CloseButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.close_button:SetPoint("TOPRIGHT", 0, 0)
-NuttenhAdmin.main_frame.close_button:SetFrameStrata("HIGH")
-NuttenhAdmin.main_frame.close_button:SetFrameLevel(6)
-NuttenhAdmin.main_frame.close_button:SetHeight(25.4)
-NuttenhAdmin.main_frame.close_button:SetWidth(25.4)
-
--- Création du texte à afficher sur le bouton (+/-)
-local fontString = NuttenhAdmin.main_frame.close_button:CreateFontString(nil, "ARTWORK")
-fontString:SetAllPoints()
-fontString:SetFont("Fonts\\FRIZQT__.TTF", 12)
-fontString:SetTextColor(255, 255, 0, 1)
-fontString:SetShadowOffset(1, -1)
-fontString:SetText("x")
-
-NuttenhAdmin.main_frame.close_button.fontString = fontString
-
--- Cette fonction se déclenche lorsque l'utilisateur clique sur le bouton
-NuttenhAdmin.main_frame.close_button:SetScript("OnClick", function(self, arg1)
-	NuttenhAdmin.main_frame:Hide()
-end)
-
--- Création d'un bouton permettant de fermer la fenêtre
-NuttenhAdmin.main_frame.min_button = CreateFrame("Button", "MinButton", NuttenhAdmin.main_frame, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.min_button:SetPoint("TOPRIGHT", -25, 0)
-NuttenhAdmin.main_frame.min_button:SetFrameStrata("HIGH")
-NuttenhAdmin.main_frame.min_button:SetFrameLevel(6)
-NuttenhAdmin.main_frame.min_button:SetHeight(25.4)
-NuttenhAdmin.main_frame.min_button:SetWidth(25.4)
-
--- Création du texte à afficher sur le bouton (+/-)
-local fontString = NuttenhAdmin.main_frame.min_button:CreateFontString(nil, "ARTWORK")
-fontString:SetAllPoints()
-fontString:SetFont("Fonts\\FRIZQT__.TTF", 20)
-fontString:SetTextColor(255, 255, 0, 1)
-fontString:SetShadowOffset(1, -1)
-fontString:SetText("-")
-
-NuttenhAdmin.main_frame.min_button.fontString = fontString
-
-local isMinimized = false
-
--- Cette fonction se déclenche lorsque l'utilisateur clique sur le bouton
-NuttenhAdmin.main_frame.min_button:SetScript("OnClick", function(self, arg1)
-	if isMinimized == false then
-		-- On réduit la taille de la fenêtre et on masque les principales parties qui la compose
-		NuttenhAdmin.main_frame:SetHeight(55)
-
-		NuttenhAdmin.main_frame.missions:Hide()
-		NuttenhAdmin.main_frame.player_list:Hide()
-		NuttenhAdmin.main_frame.rewards:Hide()
-		NuttenhAdmin.main_frame.stop_button:Hide()
-		NuttenhAdmin.main_frame.start_button:Hide()
-		NuttenhAdmin.main_frame.specific_button:Hide()
-		NuttenhAdmin.main_frame.generate_button:Hide()
-
-		fontString:SetText("+")
-		fontString:SetFont("Fonts\\FRIZQT__.TTF", 16)
-
-		isMinimized = true
-	else
-		-- On redonne à la fenêtre sa taille de base et on réaffiche les parties qui la compose
-		NuttenhAdmin.main_frame:SetHeight(500)
-
-		NuttenhAdmin.main_frame.missions:Show()
-		NuttenhAdmin.main_frame.player_list:Show()
-		NuttenhAdmin.main_frame.rewards:Show()
-		NuttenhAdmin.main_frame.stop_button:Show()
-		NuttenhAdmin.main_frame.start_button:Show()
-		NuttenhAdmin.main_frame.specific_button:Show()
-		NuttenhAdmin.main_frame.generate_button:Show()
-
-		fontString:SetFont("Fonts\\FRIZQT__.TTF", 20)
-		fontString:SetText("-")
-
-		isMinimized = false
-	end
-end)
-
 -- Player List
 NuttenhAdmin.main_frame.player_list = CreateFrame("Frame", "PlayerList", NuttenhAdmin.main_frame)
 NuttenhAdmin.main_frame.player_list:SetWidth(245)
@@ -185,7 +104,7 @@ function addPlayerLine(playerName)
 	NuttenhAdmin.main_frame.player_list.content[lineNumber] = NuttenhAdmin.main_frame.player_list.content:CreateFontString(nil, "ARTWORK")
 	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetFont("Fonts\\ARIALN.ttf", 12)
 	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetPoint("TOPLEFT", 0, 10 - (lineNumber * 20))
-	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetText(lineNumber .. ". " .. playerName)
+	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetText(lineNumber .. ". " .. playerName .. " [W]")
 	-- NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetTextColor(rgb["r"] / 255, rgb["g"] / 255, rgb["b"] / 255, 1)
 end
 
@@ -1049,4 +968,10 @@ NuttenhAdmin.main_frame.stop_button:SetText("Arrêter l'event !")
 
 NuttenhAdmin.main_frame.stop_button:SetScript("OnClick", function(self)
 	eventCommand("stop")
+end)
+
+wait(0.2, function()
+	for i=1, getArraySize(vAGet("playingUsers")) do
+		addPlayerLine(_Admin["playingUsers"][i])
+	end
 end)
