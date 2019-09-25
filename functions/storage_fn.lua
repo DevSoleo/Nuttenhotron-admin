@@ -17,4 +17,7 @@ function vASmoothClear()
 	wait(0.1, vASave("isStarted", false))
 	wait(0.1, vASave("playingUsers", {}))
 	wait(0.1, vASave("isStarted", false))
+	wait(0.1, vASave("maxTime", ""))
+	wait(0.1, vASave("GM", ""))
+
 end

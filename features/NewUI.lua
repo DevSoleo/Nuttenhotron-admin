@@ -104,7 +104,7 @@ function addPlayerLine(playerName)
 	NuttenhAdmin.main_frame.player_list.content[lineNumber] = NuttenhAdmin.main_frame.player_list.content:CreateFontString(nil, "ARTWORK")
 	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetFont("Fonts\\ARIALN.ttf", 12)
 	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetPoint("TOPLEFT", 0, 10 - (lineNumber * 20))
-	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetText(lineNumber .. ". " .. playerName .. " [W]")
+	NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetText(lineNumber .. ". " .. playerName)
 	-- NuttenhAdmin.main_frame.player_list.content[lineNumber]:SetTextColor(rgb["r"] / 255, rgb["g"] / 255, rgb["b"] / 255, 1)
 end
 
@@ -589,8 +589,8 @@ NuttenhAdmin.main_frame.gold = 0
 -- Rewards Frame
 NuttenhAdmin.main_frame.rewards = CreateFrame("Frame", "MainFrame_RewardsFrame", NuttenhAdmin.main_frame)
 NuttenhAdmin.main_frame.rewards:SetWidth(245)
-NuttenhAdmin.main_frame.rewards:SetHeight(400)
-NuttenhAdmin.main_frame.rewards:SetPoint("LEFT", 40, 5)
+NuttenhAdmin.main_frame.rewards:SetHeight(340)
+NuttenhAdmin.main_frame.rewards:SetPoint("TOPLEFT", 40, -45)
 NuttenhAdmin.main_frame.rewards:SetBackdrop({
 	edgeFile="Interface/Tooltips/UI-Tooltip-Border", 
 	tile=false,
@@ -644,13 +644,13 @@ NuttenhAdmin.main_frame.rewards.items.gold_value:SetTextColor(1, 1, 1, 1)
 -- Titre pour les P.O.
 NuttenhAdmin.main_frame.rewards.gold_title = NuttenhAdmin.main_frame.rewards:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.rewards.gold_title:SetFont("Fonts\\FRIZQT__.ttf", 10)
-NuttenhAdmin.main_frame.rewards.gold_title:SetPoint("BOTTOMLEFT", 29, 70 + 7)
+NuttenhAdmin.main_frame.rewards.gold_title:SetPoint("BOTTOMLEFT", 29, 15 + 7)
 NuttenhAdmin.main_frame.rewards.gold_title:SetText("Nombre de pièces d'or")
 NuttenhAdmin.main_frame.rewards.gold_title:SetTextColor(1, 1, 1, 1)
 
 -- Input pour les P.O.
 NuttenhAdmin.main_frame.rewards.gold_input = CreateFrame("EditBox", "MissionFrame_RewardFrame_GoldInput", NuttenhAdmin.main_frame.rewards, "InputBoxTemplate")
-NuttenhAdmin.main_frame.rewards.gold_input:SetPoint("BOTTOMLEFT", 29, 70)
+NuttenhAdmin.main_frame.rewards.gold_input:SetPoint("BOTTOMLEFT", 29, 15)
 NuttenhAdmin.main_frame.rewards.gold_input:SetHeight(25)
 NuttenhAdmin.main_frame.rewards.gold_input:SetWidth(120)
 NuttenhAdmin.main_frame.rewards.gold_input:SetAutoFocus(false)
@@ -667,7 +667,7 @@ end)
 
 -- Bouton pour les P.O.
 NuttenhAdmin.main_frame.rewards.gold_button = CreateFrame("Button", "MissionFrame_RewardFrame_GoldButton", NuttenhAdmin.main_frame.rewards, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.rewards.gold_button:SetPoint("BOTTOMRIGHT", -19, 70)
+NuttenhAdmin.main_frame.rewards.gold_button:SetPoint("BOTTOMRIGHT", -19, 15)
 NuttenhAdmin.main_frame.rewards.gold_button:SetHeight(25)
 NuttenhAdmin.main_frame.rewards.gold_button:SetWidth(70)
 NuttenhAdmin.main_frame.rewards.gold_button:SetText("Définir")
@@ -680,23 +680,173 @@ NuttenhAdmin.main_frame.rewards.gold_button:SetScript("OnClick", function(self)
 end)
 
 
+NuttenhAdmin.main_frame.date = CreateFrame("Frame", "MainFrame_DateFrame", NuttenhAdmin.main_frame)
+NuttenhAdmin.main_frame.date:SetWidth(245)
+NuttenhAdmin.main_frame.date:SetHeight(58)
+NuttenhAdmin.main_frame.date:SetPoint("BOTTOMLEFT", 40, 55)
+NuttenhAdmin.main_frame.date:SetBackdrop({
+	edgeFile="Interface/Tooltips/UI-Tooltip-Border", 
+	tile=false,
+	tileSize=64, 
+	edgeSize=10, 
+	insets={
+		left=4,
+		right=4,
+		top=4,
+		bottom=4
+	}
+})
+
+-- MEGA TITRE DATE
+NuttenhAdmin.main_frame.date.title = NuttenhAdmin.main_frame.date:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.date.title:SetFont("Fonts\\FRIZQT__.ttf", 12)
+NuttenhAdmin.main_frame.date.title:SetPoint("TOP", 0, -6)
+NuttenhAdmin.main_frame.date.title:SetText("Date de fin de l'event :")
+NuttenhAdmin.main_frame.date.title:SetTextColor(1, 1, 1, 1)
+
+
+-- Texte Jour
+NuttenhAdmin.main_frame.date.day_title = NuttenhAdmin.main_frame.date:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.date.day_title:SetFont("Fonts\\FRIZQT__.ttf", 10)
+NuttenhAdmin.main_frame.date.day_title:SetPoint("BOTTOMLEFT", 15, 7 + 7)
+NuttenhAdmin.main_frame.date.day_title:SetText("Jour")
+NuttenhAdmin.main_frame.date.day_title:SetTextColor(1, 1, 1, 1)
+
+-- Input : Jour
+NuttenhAdmin.main_frame.date.day_input = CreateFrame("EditBox", "MissionFrame_DateFrame_DayInput", NuttenhAdmin.main_frame.date, "InputBoxTemplate")
+NuttenhAdmin.main_frame.date.day_input:SetPoint("BOTTOMLEFT", 15, 7)
+NuttenhAdmin.main_frame.date.day_input:SetHeight(25)
+NuttenhAdmin.main_frame.date.day_input:SetWidth(40)
+NuttenhAdmin.main_frame.date.day_input:SetAutoFocus(false)
+
+NuttenhAdmin.main_frame.date.day_input:SetScript("OnTextChanged", function(self)
+	if self:GetText() == "" then
+		NuttenhAdmin.main_frame.date.day_title:Show()
+	else
+		NuttenhAdmin.main_frame.date.day_title:Hide()
+	end
+
+	self:SetText(string.gsub(self:GetText(), "[^%d]", ""))
+
+end)
+
+-- Texte Mois
+NuttenhAdmin.main_frame.date.month_title = NuttenhAdmin.main_frame.date:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.date.month_title:SetFont("Fonts\\FRIZQT__.ttf", 10)
+NuttenhAdmin.main_frame.date.month_title:SetPoint("BOTTOMLEFT", 63, 7 + 7)
+NuttenhAdmin.main_frame.date.month_title:SetText("Mois")
+NuttenhAdmin.main_frame.date.month_title:SetTextColor(1, 1, 1, 1)
+
+-- Input : Mois
+NuttenhAdmin.main_frame.date.month_input = CreateFrame("EditBox", "MissionFrame_DateFrame_MonthInput", NuttenhAdmin.main_frame.date, "InputBoxTemplate")
+NuttenhAdmin.main_frame.date.month_input:SetPoint("BOTTOMLEFT", 63, 7)
+NuttenhAdmin.main_frame.date.month_input:SetHeight(25)
+NuttenhAdmin.main_frame.date.month_input:SetWidth(40)
+NuttenhAdmin.main_frame.date.month_input:SetAutoFocus(false)
+
+NuttenhAdmin.main_frame.date.month_input:SetScript("OnTextChanged", function(self)
+	if self:GetText() == "" then
+		NuttenhAdmin.main_frame.date.month_title:Show()
+	else
+		NuttenhAdmin.main_frame.date.month_title:Hide()
+	end
+
+	self:SetText(string.gsub(self:GetText(), "[^%d]", ""))
+
+end)
+
+-- Texte Année
+NuttenhAdmin.main_frame.date.year_title = NuttenhAdmin.main_frame.date:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.date.year_title:SetFont("Fonts\\FRIZQT__.ttf", 10)
+NuttenhAdmin.main_frame.date.year_title:SetPoint("BOTTOMLEFT", 111, 7 + 7)
+NuttenhAdmin.main_frame.date.year_title:SetText("Année")
+NuttenhAdmin.main_frame.date.year_title:SetTextColor(1, 1, 1, 1)
+
+-- Input : Année
+NuttenhAdmin.main_frame.date.year_input = CreateFrame("EditBox", "MissionFrame_DateFrame_YearInput", NuttenhAdmin.main_frame.date, "InputBoxTemplate")
+NuttenhAdmin.main_frame.date.year_input:SetPoint("BOTTOMLEFT", 111, 7)
+NuttenhAdmin.main_frame.date.year_input:SetHeight(25)
+NuttenhAdmin.main_frame.date.year_input:SetWidth(40)
+NuttenhAdmin.main_frame.date.year_input:SetAutoFocus(false)
+
+NuttenhAdmin.main_frame.date.year_input:SetScript("OnTextChanged", function(self)
+	if self:GetText() == "" then
+		NuttenhAdmin.main_frame.date.year_title:Show()
+	else
+		NuttenhAdmin.main_frame.date.year_title:Hide()
+	end
+
+	self:SetText(string.gsub(self:GetText(), "[^%d]", ""))
+
+end)
+
+-- Texte Minutes
+NuttenhAdmin.main_frame.date.minute_title = NuttenhAdmin.main_frame.date:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.date.minute_title:SetFont("Fonts\\FRIZQT__.ttf", 10)
+NuttenhAdmin.main_frame.date.minute_title:SetPoint("BOTTOMRIGHT", -20	, 7 + 7)
+NuttenhAdmin.main_frame.date.minute_title:SetText("Min")
+NuttenhAdmin.main_frame.date.minute_title:SetTextColor(1, 1, 1, 1)
+
+-- Input : Minutes
+NuttenhAdmin.main_frame.date.minute_input = CreateFrame("EditBox", "MissionFrame_DateFrame_MinuteInput", NuttenhAdmin.main_frame.date, "InputBoxTemplate")
+NuttenhAdmin.main_frame.date.minute_input:SetPoint("BOTTOMRIGHT", -15, 7)
+NuttenhAdmin.main_frame.date.minute_input:SetHeight(25)
+NuttenhAdmin.main_frame.date.minute_input:SetWidth(25)
+NuttenhAdmin.main_frame.date.minute_input:SetAutoFocus(false)
+
+NuttenhAdmin.main_frame.date.minute_input:SetScript("OnTextChanged", function(self)
+	if self:GetText() == "" then
+		NuttenhAdmin.main_frame.date.minute_title:Show()
+	else
+		NuttenhAdmin.main_frame.date.minute_title:Hide()
+	end
+
+	self:SetText(string.gsub(self:GetText(), "[^%d]", ""))
+
+end)
+
+-- Texte Heures
+NuttenhAdmin.main_frame.date.hour_title = NuttenhAdmin.main_frame.date:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.date.hour_title:SetFont("Fonts\\FRIZQT__.ttf", 10)
+NuttenhAdmin.main_frame.date.hour_title:SetPoint("BOTTOMRIGHT", -50.5, 7 + 7)
+NuttenhAdmin.main_frame.date.hour_title:SetText("Heure")
+NuttenhAdmin.main_frame.date.hour_title:SetTextColor(1, 1, 1, 1)
+
+-- Input : Heures
+NuttenhAdmin.main_frame.date.hour_input = CreateFrame("EditBox", "MissionFrame_DateFrame_HourInput", NuttenhAdmin.main_frame.date, "InputBoxTemplate")
+NuttenhAdmin.main_frame.date.hour_input:SetPoint("BOTTOMRIGHT", -48, 7)
+NuttenhAdmin.main_frame.date.hour_input:SetHeight(25)
+NuttenhAdmin.main_frame.date.hour_input:SetWidth(30)
+NuttenhAdmin.main_frame.date.hour_input:SetAutoFocus(false)
+
+NuttenhAdmin.main_frame.date.hour_input:SetScript("OnTextChanged", function(self)
+	if self:GetText() == "" then
+		NuttenhAdmin.main_frame.date.hour_title:Show()
+	else
+		NuttenhAdmin.main_frame.date.hour_title:Hide()
+	end
+
+	self:SetText(string.gsub(self:GetText(), "[^%d]", ""))
+
+end)
+
 -- Titre pour les Items
 NuttenhAdmin.main_frame.rewards.item_title = NuttenhAdmin.main_frame.rewards:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.rewards.item_title:SetFont("Fonts\\FRIZQT__.ttf", 10)
-NuttenhAdmin.main_frame.rewards.item_title:SetPoint("BOTTOMLEFT", 29, 100 + 7)
+NuttenhAdmin.main_frame.rewards.item_title:SetPoint("BOTTOMLEFT", 29, 45 + 7)
 NuttenhAdmin.main_frame.rewards.item_title:SetText("Identifiant de l'item")
 NuttenhAdmin.main_frame.rewards.item_title:SetTextColor(1, 1, 1, 1)
 
 -- Titre pour les Items
 NuttenhAdmin.main_frame.rewards.amount_title = NuttenhAdmin.main_frame.rewards:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.rewards.amount_title:SetFont("Fonts\\FRIZQT__.ttf", 10)
-NuttenhAdmin.main_frame.rewards.amount_title:SetPoint("BOTTOMLEFT", 29, 125 + 7)
+NuttenhAdmin.main_frame.rewards.amount_title:SetPoint("BOTTOMLEFT", 29, 70 + 7)
 NuttenhAdmin.main_frame.rewards.amount_title:SetText("Quantité")
 NuttenhAdmin.main_frame.rewards.amount_title:SetTextColor(1, 1, 1, 1)
 
 -- Input pour le nombre d'items à ajouter
 NuttenhAdmin.main_frame.rewards.amount_input = CreateFrame("EditBox", "MissionFrame_RewardFrame_AmountInput", NuttenhAdmin.main_frame.rewards, "InputBoxTemplate")
-NuttenhAdmin.main_frame.rewards.amount_input:SetPoint("BOTTOMLEFT", 29, 125)
+NuttenhAdmin.main_frame.rewards.amount_input:SetPoint("BOTTOMLEFT", 29, 70)
 NuttenhAdmin.main_frame.rewards.amount_input:SetHeight(25)
 NuttenhAdmin.main_frame.rewards.amount_input:SetWidth(120)
 NuttenhAdmin.main_frame.rewards.amount_input:SetAutoFocus(false)
@@ -714,7 +864,7 @@ end)
 
 -- Input pour les Items
 NuttenhAdmin.main_frame.rewards.item_input = CreateFrame("EditBox", "MissionFrame_RewardFrame_ItemInput", NuttenhAdmin.main_frame.rewards, "InputBoxTemplate")
-NuttenhAdmin.main_frame.rewards.item_input:SetPoint("BOTTOMLEFT", 29, 100)
+NuttenhAdmin.main_frame.rewards.item_input:SetPoint("BOTTOMLEFT", 29, 45)
 NuttenhAdmin.main_frame.rewards.item_input:SetHeight(25)
 NuttenhAdmin.main_frame.rewards.item_input:SetWidth(120)
 NuttenhAdmin.main_frame.rewards.item_input:SetAutoFocus(false)
@@ -731,7 +881,7 @@ end)
 
 -- Bouton pour les Items
 NuttenhAdmin.main_frame.rewards.item_button = CreateFrame("Button", "MissionFrame_RewardFrame_ItemButton", NuttenhAdmin.main_frame.rewards, "GameMenuButtonTemplate")
-NuttenhAdmin.main_frame.rewards.item_button:SetPoint("BOTTOMRIGHT", -19, 112)
+NuttenhAdmin.main_frame.rewards.item_button:SetPoint("BOTTOMRIGHT", -19, 57)
 NuttenhAdmin.main_frame.rewards.item_button:SetHeight(25)
 NuttenhAdmin.main_frame.rewards.item_button:SetWidth(70)
 NuttenhAdmin.main_frame.rewards.item_button:SetText("Ajouter")
@@ -953,6 +1103,8 @@ NuttenhAdmin.main_frame.start_button:SetScript("OnClick", function(self)
 
 		k = k:sub(1, -2)
 
+		saveEndTime()
+		
 		eventCommand("start " .. k .. " " .. UnitName("player"))
 		PlaySound("READYCHECK", "SFX")
 	else
@@ -1028,3 +1180,14 @@ minibtn:SetScript("OnClick", function()
     	NuttenhAdmin.main_frame:Hide()
     end
 end)
+
+function saveEndTime()
+	local day = NuttenhAdmin.main_frame.date.day_input:GetText()
+	local month = NuttenhAdmin.main_frame.date.month_input:GetText()
+	local year = NuttenhAdmin.main_frame.date.year_input:GetText()
+	local hour = NuttenhAdmin.main_frame.date.hour_input:GetText()
+	local minute = NuttenhAdmin.main_frame.date.minute_input:GetText()
+
+	local date = day .. "/" .. month .. "/" .. year .. " " .. hour .. ":" .. minute
+	vASave("maxTime", date)
+end

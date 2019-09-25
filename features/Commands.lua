@@ -13,30 +13,6 @@ function eventCommand(msg)
 		  			vASave("key", command[2])
 					vASave("playingUsers", {})
 			  			
-			  		local eventDurationHours = 4
-
-					local hour = tonumber(getServerDate("%H")) + eventDurationHours -- date("%H")
-					local endHour = hour - math.floor(hour / 24) * 24
-					local minutes = tonumber(getServerDate("%M")) -- date("%M")
-
-					local day = tonumber(getServerDate("%d"))
-
-					if endHour <= 4 then
-						day = day + 1
-					end
-
-					if #tostring(day) == 1 then
-						day = "0" .. tostring(day)
-					end
-
-					if #tostring(endHour) == 1 then
-						endHour = "0" .. tostring(endHour)
-					end
-
-					if #tostring(minutes) == 1 then
-						minutes = "0" .. tostring(minutes)
-					end
-
 					local s = split(command[2], "_")
 					local c = ""
 
@@ -48,9 +24,19 @@ function eventCommand(msg)
 					    c = c .. " " .. crypt(v)
 					end
 
+					-- On enregistre la clé
+					vASave("key", c)
+					-- On enregistre le MJ
+					vASave("GM", UnitName("player"))
+
 		  			SendChatMessage("Clé d'évènement : " .. c, "GUILD") -- SAY
-					SendChatMessage("Le Maître du Jeu sera : " .. "Soleo", "GUILD")
-					SendChatMessage("Date maximale de fin : " .. day .. "/06/2019 " .. endHour .. "h" .. minutes, "GUILD")
+					SendChatMessage("Le Maître du Jeu sera : " .. UnitName("player"), "GUILD")
+					
+					if vAGet("maxTime") ~= "" and vAGet("maxTime") ~= "// :" then
+						SendChatMessage("Date maximale de fin : " .. vAGet("maxTime"), "GUILD")
+					else
+						SendChatMessage("Date maximale de fin : Aucune", "GUILD")
+					end
 
 					function chrono(t, num)
                         wait(t, function()
