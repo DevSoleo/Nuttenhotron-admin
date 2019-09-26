@@ -5,7 +5,16 @@ chatGuildEvent:SetScript("OnEvent", function(self, event, message, sender, ...)
 		if getArrayIndex(vAGet("playingUsers"), sender) ~= nil then
 			SendChatMessage("Vous êtes déjà inscrit à l'event en cours ou aucun event n'est en cours.", "WHISPER", nil, sender)
 		else
-			local message = "Clé : " .. vAGet("key") .. " - MJ : " .. vAGet("GM") .. " - Heure max : " .. vAGet("maxTime")
+			local date = ""
+
+			if vAGet("maxTime") ~= "" and vAGet("maxTime") ~= "// :" then
+				date = vAGet("maxTime") 
+			else
+				date = "Aucune"
+			end
+
+			local message = "Clé : " .. vAGet("key") .. " - MJ : " .. vAGet("GM") .. " - Heure max : " .. date
+			
 			print(message)
 			SendChatMessage(message, "WHISPER", nil, sender) -- SAY
 			-- SendChatMessage("Date de fin maximale : " .. day .. "/06/2019 " .. endHour .. "h" .. minutes, "WHISPER")
