@@ -37,11 +37,69 @@ NuttenhAdmin.main_frame.title:SetText("Nuttenh Admin Panel - " .. UnitName("play
 NuttenhAdmin.main_frame.title:SetTextColor(1, 1, 1, 1)
 
 ----------------------------------------------------------------------------------------------------------
+NuttenhAdmin.main_frame.infos = CreateFrame("Frame", "MainFrame_RewardsFrame", NuttenhAdmin.main_frame)
+NuttenhAdmin.main_frame.infos:SetWidth(245)
+NuttenhAdmin.main_frame.infos:SetHeight(85)
+NuttenhAdmin.main_frame.infos:SetPoint("TOPRIGHT", -40, -45)
+NuttenhAdmin.main_frame.infos:SetBackdrop({
+	edgeFile="Interface/Tooltips/UI-Tooltip-Border", 
+	tile=false,
+	tileSize=64, 
+	edgeSize=10, 
+	insets={
+		left=4,
+		right=4,
+		top=4,
+		bottom=4
+	}
+})
+
+NuttenhAdmin.main_frame.infos.coords = NuttenhAdmin.main_frame.infos:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.infos.coords:SetFont("Fonts\\FRIZQT__.ttf", 12)
+NuttenhAdmin.main_frame.infos.coords:SetPoint("TOPLEFT", 15, -15)
+NuttenhAdmin.main_frame.infos.coords:SetText("Coordonées: x=" .. getPlayerCoords()["x"] .. " / y=75.56")
+NuttenhAdmin.main_frame.infos.coords:SetTextColor(1, 1, 1, 1)
+
+
+NuttenhAdmin.main_frame.infos.zoneText = NuttenhAdmin.main_frame.infos:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.infos.zoneText:SetFont("Fonts\\FRIZQT__.ttf", 12)
+NuttenhAdmin.main_frame.infos.zoneText:SetPoint("TOPLEFT", 15, -35)
+NuttenhAdmin.main_frame.infos.zoneText:SetText("Zone : " .. getPlayerCoords()["zone_text"])
+NuttenhAdmin.main_frame.infos.zoneText:SetTextColor(1, 1, 1, 1)
+
+NuttenhAdmin.main_frame.infos.subZoneText = NuttenhAdmin.main_frame.infos:CreateFontString(nil, "ARTWORK")
+NuttenhAdmin.main_frame.infos.subZoneText:SetFont("Fonts\\FRIZQT__.ttf", 12)
+NuttenhAdmin.main_frame.infos.subZoneText:SetPoint("TOPLEFT", 15, -55)
+NuttenhAdmin.main_frame.infos.subZoneText:SetText("Sous-zone : " .. getPlayerCoords()["sub_zone_text"])
+NuttenhAdmin.main_frame.infos.subZoneText:SetTextColor(1, 1, 1, 1)
+
+local lastUpdate = 0
+local onUpdate = CreateFrame("Frame")
+onUpdate:SetScript("OnUpdate", function(self, elapsed)
+    lastUpdate = lastUpdate + elapsed;
+
+    if lastUpdate > 0.4 then
+
+        -- Début /0.1s
+		NuttenhAdmin.main_frame.infos.coords:SetText("Coordonées: x=" .. round(getPlayerCoords()["x"], 2) .. " / y=" .. round(getPlayerCoords()["y"], 2))
+		NuttenhAdmin.main_frame.infos.zoneText:SetText("Zone : " .. getPlayerCoords()["zone_text"])
+
+		if getPlayerCoords()["sub_zone_text"] == "" then
+			NuttenhAdmin.main_frame.infos.subZoneText:SetText("Sous-zone : " .. getPlayerCoords()["zone_text"])
+		else
+			NuttenhAdmin.main_frame.infos.subZoneText:SetText("Sous-zone : " .. getPlayerCoords()["sub_zone_text"])
+		end
+
+
+        lastUpdate = 0;
+    end
+end)
+
 -- Player List
 NuttenhAdmin.main_frame.player_list = CreateFrame("Frame", "PlayerList", NuttenhAdmin.main_frame)
 NuttenhAdmin.main_frame.player_list:SetWidth(245)
-NuttenhAdmin.main_frame.player_list:SetHeight(400)
-NuttenhAdmin.main_frame.player_list:SetPoint("RIGHT", -40, 5)
+NuttenhAdmin.main_frame.player_list:SetHeight(300)
+NuttenhAdmin.main_frame.player_list:SetPoint("TOPRIGHT", -40, -140)
 NuttenhAdmin.main_frame.player_list:SetBackdrop({
 	edgeFile="Interface/Tooltips/UI-Tooltip-Border", 
 	tile=false,
@@ -94,8 +152,32 @@ NuttenhAdmin.main_frame.player_list.content:SetSize(250, 250)
 
 scrollframe:SetScrollChild(NuttenhAdmin.main_frame.player_list.content)
 
+function getIndication(mission_type, setting)
+	if mission_type == "1" then
+		return "Cibler : " .. TARGETS_LIST[setting]["name"][GetLocale()]
+	elseif mission_type == "2" then
+		return "Trouver : " .. LOCATIONS_LIST[setting]["zoneText"][GetLocale()]
+	elseif mission_type == "3" then
+		return "Posséder : x" .. ITEMS_LIST[setting]["amount"] .. " " .. ITEMS_LIST[setting]["name"][GetLocale()]
+	elseif mission_type == "4" then
+		return "Tuer : x" .. KILL_LIST[setting]["amount"] .. " " .. KILL_LIST[setting]["name"][GetLocale()]
+	end
+end
+
+function getSubIndication(mission_type, setting)
+	if mission_type == "1" then
+		return TARGETS_LIST[setting]["indication"]
+	elseif mission_type == "2" then
+		return LOCATIONS_LIST[setting]["indication"]
+	elseif mission_type == "3" then
+		return ITEMS_LIST[setting]["indication"]
+	elseif mission_type == "4" then 
+		return "Compteur : 0/" .. KILL_LIST[setting]["amount"]
+	end
+end
+
 function addPlayerLine(playerName)
-	local lineNumber = getArraySize(NuttenhAdmin.main_frame.player_list.content)
+	local lineNumber = array_size(NuttenhAdmin.main_frame.player_list.content)
 
 	local _, className = UnitClass(playerName)
 
@@ -186,7 +268,7 @@ NuttenhAdmin.main_frame.missions.list.content:SetSize(250, 250)
 scrollframe:SetScrollChild(NuttenhAdmin.main_frame.missions.list.content)
 
 function addLineAdmin(text, mission_type, setting)
-	local lineNumber = getArraySize(NuttenhAdmin.main_frame.missions.list.content)
+	local lineNumber = array_size(NuttenhAdmin.main_frame.missions.list.content)
 	NuttenhAdmin.main_frame.missions.list.content[lineNumber] = NuttenhAdmin.main_frame.missions.list.content:CreateFontString(nil, "ARTWORK")
 	NuttenhAdmin.main_frame.missions.list.content[lineNumber]:SetFont("Fonts\\ARIALN.ttf", 12)
 	NuttenhAdmin.main_frame.missions.list.content[lineNumber]:SetPoint("TOPLEFT", 0, 15 - (lineNumber * 20))
@@ -203,7 +285,7 @@ function addLineAdmin(text, mission_type, setting)
 end
 
 function removeLastLine()
-	local lineNumber = getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1
+	local lineNumber = array_size(NuttenhAdmin.main_frame.missions.list.content) - 1
 
 	NuttenhAdmin.main_frame.missions.list.content[lineNumber]:Hide()
 	NuttenhAdmin.main_frame.missions.list.content[lineNumber] = nil
@@ -213,8 +295,8 @@ end
 
 local dropdownSelectNpcValues = {"Nom du PNJ"}
 
-for o=1, getArraySize(NPC_LIST) do
-	dropdownSelectNpcValues[o + 1] = NPC_LIST[tostring(o)]["name"][GetLocale()]
+for o=1, array_size(TARGETS_LIST) do
+	dropdownSelectNpcValues[o + 1] = TARGETS_LIST[tostring(o)]["npc_name"]
 end
 
 local dropdownSelectNpcValue = 0
@@ -226,7 +308,7 @@ UIDropDownMenu_SetWidth(pSelectNpc, 150)
 UIDropDownMenu_SetText(pSelectNpc, "Nom du PNJ")
 
 UIDropDownMenu_Initialize(pSelectNpc, function(self, level, menuList)
-	for i=1, getArraySize(dropdownSelectNpcValues) do
+	for i=1, array_size(dropdownSelectNpcValues) do
 		local info = UIDropDownMenu_CreateInfo()
 		info.text, info.arg1, info.func = dropdownSelectNpcValues[i], i, self.SetValue
 
@@ -255,8 +337,8 @@ pSelectNpc:Hide()
 
 local dropdownSelectZoneValues = {"Type de mission :"}
 
-for o=1, getArraySize(LOCATIONS_LIST) do
-	dropdownSelectZoneValues[o + 1] = LOCATIONS_LIST[tostring(o)]["displayName"][GetLocale()]
+for o=1, array_size(LOCATIONS_LIST) do
+	dropdownSelectZoneValues[o + 1] = LOCATIONS_LIST[tostring(o)]["location_name"]
 end
 
 local dropdownSelectZoneValue = 0
@@ -268,7 +350,7 @@ UIDropDownMenu_SetWidth(pSelectZone, 150)
 UIDropDownMenu_SetText(pSelectZone, "Lieu")
 
 UIDropDownMenu_Initialize(pSelectZone, function(self, level, menuList)
-	for i=1, getArraySize(dropdownSelectZoneValues) do
+	for i=1, array_size(dropdownSelectZoneValues) do
 		local info = UIDropDownMenu_CreateInfo()
 		info.text, info.arg1, info.func = dropdownSelectZoneValues[i], i, self.SetValue
 
@@ -285,8 +367,6 @@ function pSelectZone:SetValue(value)
 	dropdownSelectZoneValue = value
 	local v = value - 1
 	pSelectZone.value = v
-
-	-- add2Key(r, v, 1)
 
 	CloseDropDownMenus()
 end
@@ -307,7 +387,7 @@ pSelectMissionType.text = "Type de mission"
 
 -- Ajout des options au menu déroulant
 UIDropDownMenu_Initialize(pSelectMissionType, function(self, level, menuList)
-	for i=1, getArraySize(missions_types) do
+	for i=1, array_size(missions_types) do
 		local info = UIDropDownMenu_CreateInfo()
 		info.text, info.arg1, info.func = missions_types[i], i, self.SetValue
 
@@ -323,8 +403,8 @@ end)
 
 local dropdownSelectItemValues = {"Item"}
 
-for o=1, getArraySize(ITEMS_LIST) do
-	dropdownSelectItemValues[o + 1] = "x" .. ITEMS_LIST[tostring(o)]["amount"] .. " " .. ITEMS_LIST[tostring(o)]["name"][GetLocale()]
+for o=1, array_size(ITEMS_LIST) do
+	dropdownSelectItemValues[o + 1] = "x" .. ITEMS_LIST[tostring(o)]["amount"] .. " " .. ITEMS_LIST[tostring(o)]["item_name"]
 end
 
 local dropdownSelectItemValue = 0
@@ -336,7 +416,7 @@ UIDropDownMenu_SetWidth(pSelectItem, 150)
 UIDropDownMenu_SetText(pSelectItem, "Item")
 
 UIDropDownMenu_Initialize(pSelectItem, function(self, level, menuList)
-	for i=1, getArraySize(dropdownSelectItemValues) do
+	for i=1, array_size(dropdownSelectItemValues) do
 		local info = UIDropDownMenu_CreateInfo()
 		info.text, info.arg1, info.func = dropdownSelectItemValues[i], i, self.SetValue
 
@@ -350,11 +430,9 @@ end)
 
 function pSelectItem:SetValue(value)
 	UIDropDownMenu_SetText(pSelectItem, dropdownSelectItemValues[value])
-	dropdownSelectZoneValue = value
+	dropdownSelectItemValue = value
 	local v = value - 1
 	pSelectItem.value = v
-
-	-- add2Key(r, v, 1)
 
 	CloseDropDownMenus()
 end
@@ -365,8 +443,8 @@ pSelectItem:Hide()
 
 local dropdownSelectMobValues = {"Mob"}
 
-for o=1, getArraySize(KILL_LIST) do
-	dropdownSelectMobValues[o + 1] = "x" .. KILL_LIST[tostring(o)]["amount"] .. " " .. KILL_LIST[tostring(o)]["name"][GetLocale()]
+for o=1, array_size(KILL_LIST) do
+	dropdownSelectMobValues[o + 1] = "x" .. KILL_LIST[tostring(o)]["amount"] .. " " .. KILL_LIST[tostring(o)]["mob_name"]
 end
 
 local dropdownSelectMobValue = 0
@@ -378,7 +456,7 @@ UIDropDownMenu_SetWidth(pSelectMob, 150)
 UIDropDownMenu_SetText(pSelectMob, "Mob")
 
 UIDropDownMenu_Initialize(pSelectMob, function(self, level, menuList)
-	for i=1, getArraySize(dropdownSelectMobValues) do
+	for i=1, array_size(dropdownSelectMobValues) do
 		local info = UIDropDownMenu_CreateInfo()
 		info.text, info.arg1, info.func = dropdownSelectMobValues[i], i, self.SetValue
 
@@ -405,8 +483,8 @@ pSelectMob:Hide()
 
 local dropdownSelectQuestionValues = {"Questions"}
 
-for o=1, getArraySize(ANSWER_LIST) do
-	dropdownSelectQuestionValues[o + 1] = ANSWER_LIST[tostring(o)]["question"]
+for o=1, array_size(QUESTIONS_LIST) do
+	dropdownSelectQuestionValues[o + 1] = QUESTIONS_LIST[tostring(o)]["question"]
 end
 
 local dropdownSelectQuestionValue = 0
@@ -418,7 +496,7 @@ UIDropDownMenu_SetWidth(pSelectQuestion, 150)
 UIDropDownMenu_SetText(pSelectQuestion, "Questions")
 
 UIDropDownMenu_Initialize(pSelectQuestion, function(self, level, menuList)
-	for i=1, getArraySize(dropdownSelectQuestionValues) do
+	for i=1, array_size(dropdownSelectQuestionValues) do
 		local info = UIDropDownMenu_CreateInfo()
 		info.text, info.arg1, info.func = dropdownSelectQuestionValues[i], i, self.SetValue
 
@@ -445,8 +523,8 @@ pSelectQuestion:Hide()
 
 local dropdownSelectGameValues = {"Mini-jeux"}
 
-for o=1, getArraySize(GAMES_LIST) do
-	dropdownSelectGameValues[o + 1] = GAMES_LIST[tostring(o)]["name"][GetLocale()]
+for o=1, array_size(GAMES_LIST) do
+	dropdownSelectGameValues[o + 1] = GAMES_LIST[tostring(o)]["name"]
 end
 
 local dropdownSelectGameValue = 0
@@ -458,7 +536,7 @@ UIDropDownMenu_SetWidth(pSelectGame, 150)
 UIDropDownMenu_SetText(pSelectGame, "Mini-jeux")
 
 UIDropDownMenu_Initialize(pSelectGame, function(self, level, menuList)
-	for i=1, getArraySize(dropdownSelectGameValues) do
+	for i=1, array_size(dropdownSelectGameValues) do
 		local info = UIDropDownMenu_CreateInfo()
 		info.text, info.arg1, info.func = dropdownSelectGameValues[i], i, self.SetValue
 
@@ -579,7 +657,7 @@ NuttenhAdmin.main_frame.missions.remove_button:SetWidth(200)
 NuttenhAdmin.main_frame.missions.remove_button:SetText("Supprimer la dernière mission")
 
 NuttenhAdmin.main_frame.missions.remove_button:SetScript("OnClick", function(self)
-	if getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1 > 0 then
+	if array_size(NuttenhAdmin.main_frame.missions.list.content) - 1 > 0 then
 		removeLastLine()
 	end
 end)
@@ -905,7 +983,7 @@ NuttenhAdmin.main_frame.items = {}
 NuttenhAdmin.main_frame.itemsFrames = {}
 
 function addItem(itemId, amount)
-	local nList = getArraySize(NuttenhAdmin.main_frame.items) + 1
+	local nList = array_size(NuttenhAdmin.main_frame.items) + 1
 
 	if nList <= 6 then
 		NuttenhAdmin.main_frame.items[nList] = {id=itemId, amount=amount, n=nList}
@@ -922,7 +1000,7 @@ function removeItem(index)
 end
 
 function undisplayItems()
-	for i=1, getArraySize(NuttenhAdmin.main_frame.itemsFrames) do
+	for i=1, array_size(NuttenhAdmin.main_frame.itemsFrames) do
 		NuttenhAdmin.main_frame.itemsFrames[i]:Hide()
 	end
 
@@ -931,7 +1009,7 @@ end
 
 function displayItems()
 	undisplayItems()
-	for i=1, getArraySize(NuttenhAdmin.main_frame.items) do
+	for i=1, array_size(NuttenhAdmin.main_frame.items) do
 		local itemId = NuttenhAdmin.main_frame.items[i]["id"]
 		local amount = NuttenhAdmin.main_frame.items[i]["amount"]
 
@@ -993,15 +1071,15 @@ NuttenhAdmin.main_frame.generate_button:SetWidth(140)
 NuttenhAdmin.main_frame.generate_button:SetText("Générer la clé")
 
 NuttenhAdmin.main_frame.generate_button:SetScript("OnClick", function(self)
-	if getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1 > 0 then
+	if array_size(NuttenhAdmin.main_frame.missions.list.content) - 1 > 0 then
 		local key = {}
 		local k = ""
 
-		for i=1, getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1 do
-			key[getArraySize(key)] = NuttenhAdmin.main_frame.missions.list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.missions.list.content[i]["setting"] .. "_"
+		for i=1, array_size(NuttenhAdmin.main_frame.missions.list.content) - 1 do
+			key[array_size(key)] = NuttenhAdmin.main_frame.missions.list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.missions.list.content[i]["setting"] .. "_"
 		end
 
-		for i=0, getArraySize(key) - 1 do
+		for i=0, array_size(key) - 1 do
 			k = k .. tostring(key[i])
 		end
 
@@ -1045,14 +1123,14 @@ NuttenhAdmin.main_frame.specific_button:SetScript("OnClick", function(self)
 	  	hasEditBox = true,
 
 	  	OnAccept = function(self)
-	  		for i=1, getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1 do
+	  		for i=1, array_size(NuttenhAdmin.main_frame.missions.list.content) - 1 do
 				NuttenhAdmin.main_frame.missions.list.content[i]:Hide()
 				NuttenhAdmin.main_frame.missions.list.content[i] = nil
 			end
 
-			local splitedKey = split(self.editBox:GetText(), "_")
+			local splitedKey = str_split(self.editBox:GetText(), "_")
 
-			for i=1, getArraySize(splitedKey) do
+			for i=1, array_size(splitedKey) do
 				local mission = splitedKey[i]
 				local mission_type = string.sub(mission, 1, 1)
 				local setting = string.sub(mission, 2)
@@ -1078,10 +1156,10 @@ NuttenhAdmin.main_frame.start_button:SetWidth(200)
 NuttenhAdmin.main_frame.start_button:SetText("Démarrer l'event !")
 
 NuttenhAdmin.main_frame.start_button:SetScript("OnClick", function(self)
-	if getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1 > 0 then
+	if array_size(NuttenhAdmin.main_frame.missions.list.content) - 1 > 0 then
 		
 		-- Ajout des récompense saisies (items)
-		for i=1, getArraySize(NuttenhAdmin.main_frame.items) do
+		for i=1, array_size(NuttenhAdmin.main_frame.items) do
 			rewardCommand("add " .. NuttenhAdmin.main_frame.items[i]["id"] .. " " .. NuttenhAdmin.main_frame.items[i]["amount"])
 		end
 
@@ -1093,11 +1171,11 @@ NuttenhAdmin.main_frame.start_button:SetScript("OnClick", function(self)
 		local key = {}
 		local k = ""
 
-		for i=1, getArraySize(NuttenhAdmin.main_frame.missions.list.content) - 1 do
-			key[getArraySize(key)] = NuttenhAdmin.main_frame.missions.list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.missions.list.content[i]["setting"] .. "_"
+		for i=1, array_size(NuttenhAdmin.main_frame.missions.list.content) - 1 do
+			key[array_size(key)] = NuttenhAdmin.main_frame.missions.list.content[i]["mission_type"] .. NuttenhAdmin.main_frame.missions.list.content[i]["setting"] .. "_"
 		end
 
-		for i=0, getArraySize(key) - 1 do
+		for i=0, array_size(key) - 1 do
 			k = k .. tostring(key[i])
 		end
 
@@ -1123,7 +1201,7 @@ NuttenhAdmin.main_frame.stop_button:SetScript("OnClick", function(self)
 end)
 
 wait(0.2, function()
-	for i=1, getArraySize(vAGet("playingUsers")) do
+	for i=1, array_size(vAGet("playingUsers")) do
 		addPlayerLine(_Admin["playingUsers"][i])
 	end
 end)
@@ -1188,6 +1266,8 @@ function saveEndTime()
 	local hour = NuttenhAdmin.main_frame.date.hour_input:GetText()
 	local minute = NuttenhAdmin.main_frame.date.minute_input:GetText()
 
-	local date = day .. "/" .. month .. "/" .. year .. " " .. hour .. ":" .. minute
+	-- local date = day .. "/" .. month .. "/" .. year .. " " .. hour .. ":" .. minute
+	local date = year .. "-" .. month .. "-" .. day .. " " .. hour .. ":" .. minute .. ":00"
+	
 	vASave("maxTime", date)
 end

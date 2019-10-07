@@ -1,4 +1,4 @@
-function getArrayIndex(array, value)
+function array_search(array, value)
 	local index = {}
   
 	for k, v in pairs(array) do
@@ -8,7 +8,7 @@ function getArrayIndex(array, value)
  	return index[value]
 end
 
-function getArraySize(array)
+function array_size(array)
 	if array ~= nil then
 		local counter = 0
 

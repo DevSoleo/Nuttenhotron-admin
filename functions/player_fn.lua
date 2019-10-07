@@ -15,23 +15,6 @@ function getPlayerCoords()
     return {x=x, y=y, zone_text=zone_text, sub_zone_text=sub_zone_text};
 end
 
---[[
-function getGuildName(unit_id)
-  local guild_name, _, _ = GetGuildInfo(unit_id)
-  return guild_name
-end
-
-function getPlayerInfo()
-  SendWho(getGuildName("player"))
-
-  local _, connected_players = GetNumGuildMembers()
-
-  for i=1, connected_players do   
-     print(GetWhoInfo(i))
-  end
-end
-]]--
-
 function getClassColor(className)
     local classes = {}
 

@@ -2,7 +2,7 @@ SLASH_EVENT1 = "/event"
 SLASH_REWARD1 = "/reward"
 
 function eventCommand(msg)
-	local command = split(msg, " ")
+	local command = str_split(msg, " ")
 
 	if IsInGuild() then
 		if command[1] == "start" then
@@ -13,12 +13,8 @@ function eventCommand(msg)
 		  			vASave("key", command[2])
 					vASave("playingUsers", {})
 			  			
-					local s = split(command[2], "_")
+					local s = str_split(command[2], "_")
 					local c = ""
-
-					for i=1, getArraySize(s) do
-						print(s[i])
-					end
 
 					for i,v in ipairs(s) do
 					    c = c .. " " .. crypt(v)
@@ -29,14 +25,26 @@ function eventCommand(msg)
 					-- On enregistre le MJ
 					vASave("GM", UnitName("player"))
 
-		  			SendChatMessage("Clé d'évènement : " .. c, "GUILD") -- SAY
+					local cryptedKey = c
+
+					local speChars = {"µ", "$", "^", "@", "}", "#", "{", "&", "¤", "°"}
+
+					for i=0, array_size(str_split(cryptedKey, " ")) do
+					    cryptedKey = string.gsub(cryptedKey, " ", speChars[math.random(9)], 1)
+					end
+
+		  			SendChatMessage("Clé d'évènement : " .. cryptedKey, "GUILD") -- SAY
 					SendChatMessage("Le Maître du Jeu sera : " .. UnitName("player"), "GUILD")
-					
-					if vAGet("maxTime") ~= "" and vAGet("maxTime") ~= "// :" then
+            		
+            		local syntaxDate = getServerDate("%y") .. "-" .. getServerDate("%m") .. "-" .. getServerDate("%d") .. " " .. getServerDate("%H") .. ":" .. getServerDate("%M") .. ":00"
+
+					if vAGet("maxTime") ~= "" and vAGet("maxTime") ~= "-- ::00" then
 						SendChatMessage("Date maximale de fin : " .. vAGet("maxTime"), "GUILD")
 					else
 						SendChatMessage("Date maximale de fin : Aucune", "GUILD")
 					end
+
+		  			SendChatMessage("Date de départ : " .. syntaxDate, "GUILD") -- SAY
 
 					function chrono(t, num)
                         wait(t, function()
@@ -77,7 +85,7 @@ function eventCommand(msg)
 end
 
 function rewardCommand(msg)
-	local command = split(msg, " ")
+	local command = str_split(msg, " ")
 
 	if vAGet("isStarted") == false or vAGet("isStarted") == nil then
 		if command[1] == "add" then
@@ -95,11 +103,11 @@ function rewardCommand(msg)
 				
 					SendChatMessage(UnitName("player") .. " a ajouté x" .. amount .. " " .. itemName .. " (" .. command[2] .. ") en récompense !", "GUILD")
 					
-					if getArraySize(vAGet("rewards")) == nil then
+					if array_size(vAGet("rewards")) == nil then
 						vASave("rewards", {})
 						_Admin["rewards"]["0"] = {id=id, amount=amount}
 					else
-						_Admin["rewards"][getArraySize(vAGet("rewards"))] = {id=id, amount=amount}
+						_Admin["rewards"][array_size(vAGet("rewards"))] = {id=id, amount=amount}
 					end
 				end
 			else
