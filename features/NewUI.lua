@@ -8,7 +8,7 @@ NuttenhAdmin.main_frame:SetScript("OnDragStart", NuttenhAdmin.main_frame.StartMo
 NuttenhAdmin.main_frame:SetScript("OnDragStop", NuttenhAdmin.main_frame.StopMovingOrSizing) -- frame.StopMovingOrSizing
 NuttenhAdmin.main_frame:SetWidth(900)
 NuttenhAdmin.main_frame:SetHeight(500)
-NuttenhAdmin.main_frame:SetFrameLevel(5)
+NuttenhAdmin.main_frame:SetFrameLevel(10)
 
 NuttenhAdmin.main_frame:SetBackdrop({
 	bgFile="Interface/Tooltips/UI-Tooltip-Background", 
@@ -57,20 +57,20 @@ NuttenhAdmin.main_frame.infos:SetBackdrop({
 NuttenhAdmin.main_frame.infos.coords = NuttenhAdmin.main_frame.infos:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.infos.coords:SetFont("Fonts\\FRIZQT__.ttf", 12)
 NuttenhAdmin.main_frame.infos.coords:SetPoint("TOPLEFT", 15, -15)
-NuttenhAdmin.main_frame.infos.coords:SetText("Coordonées: x=" .. getPlayerCoords()["x"] .. " / y=75.56")
+NuttenhAdmin.main_frame.infos.coords:SetText("Coordonées: x= / y=")
 NuttenhAdmin.main_frame.infos.coords:SetTextColor(1, 1, 1, 1)
 
 
 NuttenhAdmin.main_frame.infos.zoneText = NuttenhAdmin.main_frame.infos:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.infos.zoneText:SetFont("Fonts\\FRIZQT__.ttf", 12)
 NuttenhAdmin.main_frame.infos.zoneText:SetPoint("TOPLEFT", 15, -35)
-NuttenhAdmin.main_frame.infos.zoneText:SetText("Zone : " .. getPlayerCoords()["zone_text"])
+NuttenhAdmin.main_frame.infos.zoneText:SetText("Zone : ")
 NuttenhAdmin.main_frame.infos.zoneText:SetTextColor(1, 1, 1, 1)
 
 NuttenhAdmin.main_frame.infos.subZoneText = NuttenhAdmin.main_frame.infos:CreateFontString(nil, "ARTWORK")
 NuttenhAdmin.main_frame.infos.subZoneText:SetFont("Fonts\\FRIZQT__.ttf", 12)
 NuttenhAdmin.main_frame.infos.subZoneText:SetPoint("TOPLEFT", 15, -55)
-NuttenhAdmin.main_frame.infos.subZoneText:SetText("Sous-zone : " .. getPlayerCoords()["sub_zone_text"])
+NuttenhAdmin.main_frame.infos.subZoneText:SetText("Sous-zone : ")
 NuttenhAdmin.main_frame.infos.subZoneText:SetTextColor(1, 1, 1, 1)
 
 local lastUpdate = 0
@@ -81,7 +81,7 @@ onUpdate:SetScript("OnUpdate", function(self, elapsed)
     if lastUpdate > 0.4 then
 
         -- Début /0.1s
-		NuttenhAdmin.main_frame.infos.coords:SetText("Coordonées: x=" .. round(getPlayerCoords()["x"], 2) .. " / y=" .. round(getPlayerCoords()["y"], 2))
+		NuttenhAdmin.main_frame.infos.coords:SetText("Coordonées: x=" .. math_round(getPlayerCoords()["x"], 2) .. " / y=" .. math_round(getPlayerCoords()["y"], 2))
 		NuttenhAdmin.main_frame.infos.zoneText:SetText("Zone : " .. getPlayerCoords()["zone_text"])
 
 		if getPlayerCoords()["sub_zone_text"] == "" then
@@ -990,7 +990,7 @@ function addItem(itemId, amount)
 
 		displayItems()
 	else
-		message("Vous ne pouvez pas ajouter plus d'objets en récompense !")
+		message("Vous ne pouvez pas ajouter plus de récompenses !")
 	end
 end
 
@@ -1209,7 +1209,7 @@ end)
 -- Create minimap button
  
 local minibtn = CreateFrame("Button", nil, Minimap)
-minibtn:SetFrameLevel(8)
+minibtn:SetFrameLevel(5)
 minibtn:SetSize(32,32)
 minibtn:SetMovable(true)
  

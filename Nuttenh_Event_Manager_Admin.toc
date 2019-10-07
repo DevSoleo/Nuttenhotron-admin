@@ -1,0 +1,24 @@
+## Interface: 40300
+## Title: Nuttenh_Event_Manager_Admin
+## Author: Soleo
+## Version: 0.1
+## SavedVariables: _Admin
+
+functions\system_fn.lua
+functions\storage_fn.lua
+
+main.lua
+
+functions\math_fn.lua
+functions\string_fn.lua
+functions\array_fn.lua
+functions\guild_fn.lua
+functions\party_fn.lua
+functions\player_fn.lua
+
+features\Lists.lua
+features\Keys.lua
+features\Events.lua
+features\Commands.lua
+
+features\NewUI.lua
