@@ -21,3 +21,4 @@ function array_size(array)
 		return nil
 	end
 end
+

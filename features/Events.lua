@@ -23,11 +23,7 @@ chatGuildEvent:SetScript("OnEvent", function(self, event, message, sender, ...)
 
 			local message = "Clé : " .. cryptedKey .. " - MJ : " .. vAGet("GM") .. " - Heure max : " .. date
 			
-			print(message)
 			SendChatMessage(message, "WHISPER", nil, sender) -- SAY
-			-- SendChatMessage("Date de fin maximale : " .. day .. "/06/2019 " .. endHour .. "h" .. minutes, "WHISPER")
-			-- SendChatMessage(vAGet("key"), "WHISPER", nil, sender)
-			-- _Admin["playingUsers"][table.getn(vAGet("playingUsers")) + 1] = sender
 		end
 
 	elseif string.find(message, sender .. " participe à l'event !") then -- Pour les joueurs à l'heure
@@ -39,5 +35,43 @@ chatGuildEvent:SetScript("OnEvent", function(self, event, message, sender, ...)
 		end
 	elseif string.find(message, "L'évènement est terminé !") then
 		vASmoothClear()
+	elseif string.find(message, " a gagné ! Clé de victoire : ") then
+		local vicKey = string.sub(message, -9):sub(1, -6)
+
+		local win = false
+
+		local atime = time()
+		local keys = {}
+
+		local alphabet = {"N", "Y", "e", "F", "g", "H", "G", "D", "a"}
+		alphabet[0] = "i"
+
+		for i=0, 5 do
+			local result = ""
+
+			local r = string.sub(tostring(atime - 3 + i), -4)
+			r = str_split_chunk(r, 1)
+
+			for i=1, 4 do
+		  		result = result .. alphabet[tonumber(r[i])]
+			end
+
+			if vicKey == result then
+				win = true
+			end
+		end
+
+		if win then
+			SendChatMessage("---- Clé de victoire valide ! :) ----", "GUILD")
+
+			local playerId = array_search(vAGet("playingUsers"), sender)
+
+			if playerId ~= nil then
+				NuttenhAdmin.main_frame.player_list.content[playerId]:SetTextColor(0, 255, 0, 255)
+				NuttenhAdmin.main_frame.player_list.content[playerId]:SetText(playerId .. ". " .. sender .. " [V]")
+			end
+		else
+			SendChatMessage("---- Clé de victoire invalide ! T'es mauuuuvaaaaiiis Jack ! :( ----", "GUILD")
+		end
 	end
 end)

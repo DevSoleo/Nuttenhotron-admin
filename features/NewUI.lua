@@ -9,6 +9,7 @@ NuttenhAdmin.main_frame:SetScript("OnDragStop", NuttenhAdmin.main_frame.StopMovi
 NuttenhAdmin.main_frame:SetWidth(900)
 NuttenhAdmin.main_frame:SetHeight(500)
 NuttenhAdmin.main_frame:SetFrameLevel(10)
+NuttenhAdmin.main_frame:SetClampedToScreen(true)
 
 NuttenhAdmin.main_frame:SetBackdrop({
 	bgFile="Interface/Tooltips/UI-Tooltip-Background", 

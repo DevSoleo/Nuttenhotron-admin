@@ -1,6 +1,3 @@
-SLASH_EVENT1 = "/event"
-SLASH_REWARD1 = "/reward"
-
 function eventCommand(msg)
 	local command = str_split(msg, " ")
 
@@ -121,12 +118,4 @@ function rewardCommand(msg)
 	else
 		print("|cFFF547FF[Addon] [" .. addonName .. "] : Un event est déjà en cours !")
 	end
-end
-
-SlashCmdList["EVENT"] = function(msg)
-	eventCommand(msg)
-end
-
-SlashCmdList["REWARD"] = function(msg)
-	rewardCommand(msg)
 end
