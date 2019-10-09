@@ -155,13 +155,13 @@ scrollframe:SetScrollChild(NuttenhAdmin.main_frame.player_list.content)
 
 function getIndication(mission_type, setting)
 	if mission_type == "1" then
-		return "Cibler : " .. TARGETS_LIST[setting]["name"][GetLocale()]
+		return "Cibler : " .. TARGETS_LIST[setting]["npc_name"]
 	elseif mission_type == "2" then
-		return "Trouver : " .. LOCATIONS_LIST[setting]["zoneText"][GetLocale()]
+		return "Trouver : " .. LOCATIONS_LIST[setting]["location_name"]
 	elseif mission_type == "3" then
-		return "Posséder : x" .. ITEMS_LIST[setting]["amount"] .. " " .. ITEMS_LIST[setting]["name"][GetLocale()]
+		return "Posséder : x" .. ITEMS_LIST[setting]["amount"] .. " " .. ITEMS_LIST[setting]["item_name"]
 	elseif mission_type == "4" then
-		return "Tuer : x" .. KILL_LIST[setting]["amount"] .. " " .. KILL_LIST[setting]["name"][GetLocale()]
+		return "Tuer : x" .. KILLS_LIST[setting]["amount"] .. " " .. KILLS_LIST[setting]["mob_name"]
 	end
 end
 
@@ -1158,7 +1158,6 @@ NuttenhAdmin.main_frame.start_button:SetText("Démarrer l'event !")
 
 NuttenhAdmin.main_frame.start_button:SetScript("OnClick", function(self)
 	if array_size(NuttenhAdmin.main_frame.missions.list.content) - 1 > 0 then
-		
 		-- Ajout des récompense saisies (items)
 		for i=1, array_size(NuttenhAdmin.main_frame.items) do
 			rewardCommand("add " .. NuttenhAdmin.main_frame.items[i]["id"] .. " " .. NuttenhAdmin.main_frame.items[i]["amount"])

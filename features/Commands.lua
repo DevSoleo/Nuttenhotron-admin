@@ -119,3 +119,11 @@ function rewardCommand(msg)
 		print("|cFFF547FF[Addon] [" .. addonName .. "] : Un event est déjà en cours !")
 	end
 end
+
+SLASH_ADMINPREUVE1 = "/adminpreuve"
+
+SlashCmdList["ADMINPREUVE"] = function(msg)
+	local command = str_split(msg, " ")
+
+	SendChatMessage("Accès temporaire : " .. command[2], "WHISPER", nil, command[1])
+end
