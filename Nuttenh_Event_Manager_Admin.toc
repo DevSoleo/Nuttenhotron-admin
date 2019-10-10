@@ -1,7 +1,7 @@
 ## Interface: 40300
 ## Title: Nuttenh_Event_Manager_Admin
 ## Author: Soleo
-## Version: 0.1
+## Version: 1.0.0
 ## SavedVariables: _Admin
 
 functions\system_fn.lua

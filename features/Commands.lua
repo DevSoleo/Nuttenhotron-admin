@@ -29,10 +29,11 @@ function eventCommand(msg)
 					for i=0, array_size(str_split(cryptedKey, " ")) do
 					    cryptedKey = string.gsub(cryptedKey, " ", speChars[math.random(9)], 1)
 					end
-
+					
+					SendChatMessage("Version de l'addon : " .. GetAddOnMetadata("Nuttenh_Event_Manager_Admin", "Version"), "GUILD")
 		  			SendChatMessage("Clé d'évènement : " .. cryptedKey, "GUILD") -- SAY
 					SendChatMessage("Le Maître du Jeu sera : " .. UnitName("player"), "GUILD")
-            		
+
             		local syntaxDate = getServerDate("%y") .. "-" .. getServerDate("%m") .. "-" .. getServerDate("%d") .. " " .. getServerDate("%H") .. ":" .. getServerDate("%M") .. ":00"
 
 					if vAGet("maxTime") ~= "" and vAGet("maxTime") ~= "-- ::00" then
@@ -62,7 +63,6 @@ function eventCommand(msg)
 					wait(1, function()
 						chrono(1.5, 5)
 					end)
-
 		  		end
 			else
 		  		print("|cFFF547FF[Addon] [" .. addonName .. "] : Un event est déjà en cours !")

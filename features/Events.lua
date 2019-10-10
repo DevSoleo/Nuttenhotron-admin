@@ -75,3 +75,39 @@ chatGuildEvent:SetScript("OnEvent", function(self, event, message, sender, ...)
 		end
 	end
 end)
+
+local chatSystemEvent = CreateFrame("Frame")
+chatSystemEvent:RegisterEvent("CHAT_MSG_SYSTEM")
+chatSystemEvent:SetScript("OnEvent", function(self, event, message, sender, ...)
+	if string.find(message, "vient de se déconnecter.") then
+		SendChatMessage("Je suis prêt !", "OFFICER")
+	elseif string.find(message, "Je suis prêt !") then
+		connectedAdmins[array_size(connectedAdmins) + 1] = sender
+		print(connectedAdmins[1])
+	end
+end)
+
+local connectedAdmins = {}
+local founded = false
+local newAdmin = ""
+
+local chatOfficierEvent = CreateFrame("Frame")
+chatOfficierEvent:RegisterEvent("CHAT_MSG_OFFICER")
+chatOfficierEvent:SetScript("OnEvent", function(self, event, message, sender, ...)
+	if string.find(message, "Je suis prêt !") then
+		local admins = {"Malacraer", "Maladina", "Aniwen", "Drubos", "Binoom", "Soleo"}
+
+		connectedAdmins[array_size(connectedAdmins) + 1] = sender
+		for i=1, array_size(connectedAdmins) do
+			for o=1, array_size(admins) do
+				if connectedAdmins[i] == admins[o] and founded == false then
+					founded = true
+					newAdmin = admins[o]
+
+					SendChatMessage(UnitName("player") .. " est le nouveau maître de jeu !", "OFFICER")
+				end
+			end
+		end
+	end
+end)
+

@@ -162,21 +162,22 @@ function getIndication(mission_type, setting)
 		return "Posséder : x" .. ITEMS_LIST[setting]["amount"] .. " " .. ITEMS_LIST[setting]["item_name"]
 	elseif mission_type == "4" then
 		return "Tuer : x" .. KILLS_LIST[setting]["amount"] .. " " .. KILLS_LIST[setting]["mob_name"]
+	elseif mission_type == "5" then
+		return "Répondre à : " .. QUESTIONS_LIST[setting]["question"]
+	elseif mission_type == "6" then
+		return "Mini-jeu : " .. GAMES_LIST[setting]["name"]
 	end
 end
 
 function getSubIndication(mission_type, setting)
-	if mission_type == "1" then
-		return TARGETS_LIST[setting]["indication"]
-	elseif mission_type == "2" then
-		return LOCATIONS_LIST[setting]["indication"]
-	elseif mission_type == "3" then
-		return ITEMS_LIST[setting]["indication"]
-	elseif mission_type == "4" then 
-		return "Compteur : 0/" .. KILL_LIST[setting]["amount"]
+	if mission_type == "4" then 
+		return "Compteur : 0/" .. KILLS_LIST[setting]["amount"]
+	elseif mission_type == "6" then
+		return GAMES_LIST[setting]["name"]
+	else
+		return ""
 	end
 end
-
 function addPlayerLine(playerName)
 	local lineNumber = array_size(NuttenhAdmin.main_frame.player_list.content)
 

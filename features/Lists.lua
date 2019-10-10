@@ -67,7 +67,7 @@ ITEMS_LIST["19"] = {item_name="Nectar sucré", amount=5}
 ITEMS_LIST["20"] = {item_name="Bouclier en écailles de tortue usé", amount=1}
 ITEMS_LIST["21"] = {item_name="Patte de lapin", amount=5}
 
-KILL_LIST["1"] = {mob_name="Pourceau adulte sauvage", amount=5}
-KILL_LIST["2"] = {mob_name="Ecrevisse boueuse", amount=5}
+KILLS_LIST["1"] = {mob_name="Pourceau adulte sauvage", amount=5}
+KILLS_LIST["2"] = {mob_name="Ecrevisse boueuse", amount=5}
 
 GAMES_LIST["1"] = {name="Mémo"}
